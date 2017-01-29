@@ -1,9 +1,8 @@
 import logging
 import asyncio
-import discord
 import configparser
+from botutils import is_mod
 from discord.ext import commands
-from datetime import datetime, timedelta
 
 # Setup logger
 logger = logging.getLogger('discord')
@@ -35,7 +34,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     blacklist = ['discord.gg', 'discordapp.com/invite']
-    if any(thing in message.content for thing in blacklist):
+    if any(thing in message.content for thing in blacklist) and not is_mod(message):
         await bot.delete_message(message)
         return
 
@@ -44,23 +43,22 @@ async def on_message(message):
 
 async def clean_temp():
     await bot.wait_until_ready()
-    hours = 1
+
     while not bot.is_closed:
         conf.read('./config.ini')  # re-read, in case we changed something
         channels = dict(conf.items('cleantemp'))
-        beforedate = datetime.utcnow() - timedelta(hours=hours)
 
         for channel in channels:
             chan = bot.get_channel(channel)
-            
+
             async for message in bot.logs_from(chan, limit=100, reverse=True):  # load logs with 100 messages
                 deleted = await bot.purge_from(chan, before=message)  # delete anything above that 100 messages count
                 if len(deleted) > 0:  # log in console that it deleted stuff
                     print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
 
                 break  # we only needed the first message in log, actually
-            
-        await asyncio.sleep(60 * 15) # sleep 15 minutes
+
+        await asyncio.sleep(60 * 15)  # sleep 15 minutes
 
 
 # Launch

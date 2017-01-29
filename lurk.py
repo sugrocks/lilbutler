@@ -1,12 +1,11 @@
-import re
 import random
-import discord
 import requests
-from botutils import *
+from botutils import del_message
 from datetime import datetime, timezone
 from discord.ext import commands
 
 cd_epjs = 'https://sug.rocks/countdown/episodes.js'
+
 
 class Lurk:
     '''"Useful" commands'''
@@ -14,16 +13,14 @@ class Lurk:
         print('extension loaded: lurk')
         self.bot = bot
 
-
     @commands.command(pass_context=True, description='Example: "pizza or taco or burger"')
-    async def pick(self, ctx, *choices : str):
-        '''Pick an element, delimited by "or"'''
+    async def pick(self, ctx, *choices: str):
+        '''Pick an element, delimited by "or".'''
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
         options = ' '.join([str(x) for x in choices]).split(' or ')
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
         await del_message(self, ctx)
-
 
     @commands.command(pass_context=True, description='Just to test if you\'re still there.')
     async def ping(self, ctx):
@@ -38,7 +35,6 @@ class Lurk:
             await self.bot.say('%s: PONG ?' % author.mention)
             print('>>> ERROR Ping ', e)
 
-
     @commands.command(pass_context=True, description='Will return a countdown.')
     async def countdown(self, ctx):
         '''Time until next SU episode.'''
@@ -52,23 +48,23 @@ class Lurk:
                 if line and line.startswith(b'addEpisode(') and postlimit < 3:
                     ep = line.decode('utf-8').replace("addEpisode(", '')[:-1]
                     ep = [x.lstrip() for x in ep.split(',')]
-                    
+
                     now = datetime.now(timezone.utc)
                     then = datetime(int(ep[3]), int(ep[4]), int(ep[5]), int(ep[6]), int(ep[7]), tzinfo=timezone.utc)
-                    if then < now: # if episode is in the past, skip
+                    if then < now:  # if episode is in the past, skip
                         continue
                     td = then - now
                     countdown = ""
                     if td.days > 0:
                         countdown = str(td.days) + " days, "
 
-                    if (td.seconds//3600) > 0:
-                        countdown = countdown + str((td.seconds//3600)) + " hours and "
+                    if (td.seconds // 3600) > 0:
+                        countdown = countdown + str((td.seconds // 3600)) + " hours and "
 
-                    if (td.seconds//60)%60 == 1:
+                    if (td.seconds // 60) % 60 == 1:
                         countdown = countdown + "1 minute "
                     else:
-                        countdown = countdown + str((td.seconds//60)%60) + " minutes"
+                        countdown = countdown + str((td.seconds // 60) % 60) + " minutes"
 
                     if ep[9] == '1':
                         notes = '(but already leaked)'

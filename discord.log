@@ -1,6 +1,0 @@
-@discord.client [WARNING] 2017-01-29 11:26:17,934: PyNaCl is not installed, voice will NOT be supported
-@discord.client [INFO] 2017-01-29 11:26:17,939: on_ready has successfully been registered as an event
-@discord.client [INFO] 2017-01-29 11:26:17,940: on_message has successfully been registered as an event
-@discord.client [INFO] 2017-01-29 11:26:17,941: logging in using static token
-@discord.gateway [INFO] 2017-01-29 11:26:18,396: Created websocket connected to wss://gateway.discord.gg?encoding=json&v=6
-@discord.gateway [INFO] 2017-01-29 11:26:18,400: sent the identify payload to create the websocket

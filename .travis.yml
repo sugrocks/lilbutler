@@ -1,0 +1,7 @@
+language: python
+python:
+    - "3.5"
+install:
+    - pip3 install flake8
+script:
+    - flake8 --max-line-length=140 .
