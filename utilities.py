@@ -8,7 +8,7 @@ cd_epjs = 'https://sug.rocks/countdown/episodes.js'
 
 
 class Utilities:
-    """""Useful" commands"""
+    """"Useful" commands"""
     def __init__(self, bot):
         print('extension loaded: utilities')
         self.bot = bot
