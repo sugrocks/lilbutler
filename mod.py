@@ -1,9 +1,9 @@
-from botutils import is_mod, del_message
 from discord.ext import commands
+from botutils import del_message, is_admin, is_mod
 
 
 class Mod:
-    '''Commands for mods.'''
+    """Commands for mods."""
     def __init__(self, bot):
         print('extension loaded: mod')
         self.bot = bot
@@ -13,7 +13,7 @@ class Mod:
 
     @commands.command(pass_context=True, description='But I might come back!')
     async def sleep(self, ctx):
-        '''Stops the bot.'''
+        """Stops the bot."""
         if not is_admin(ctx.message):
             return
 
@@ -22,7 +22,7 @@ class Mod:
 
     @commands.command(pass_context=True, description='In case I went crazy...')
     async def clean(self, ctx):
-        '''Delete my own messages.'''
+        """Delete my own messages."""
         if not is_mod(ctx.message):
             return
 
@@ -37,7 +37,7 @@ class Mod:
 
     @commands.command(pass_context=True, description='Specify a number or I will clean the last 50 messages.')
     async def nuke(self, ctx, nbr: int = 50):
-        '''Delete a number of messages.'''
+        """Delete a number of messages."""
         if not is_mod(ctx.message):
             return
 

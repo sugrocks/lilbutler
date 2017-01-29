@@ -1,21 +1,21 @@
 import random
 import requests
 from botutils import del_message
-from datetime import datetime, timezone
 from discord.ext import commands
+from datetime import datetime, timezone
 
 cd_epjs = 'https://sug.rocks/countdown/episodes.js'
 
 
-class Lurk:
-    '''"Useful" commands'''
+class Utilities:
+    """""Useful" commands"""
     def __init__(self, bot):
-        print('extension loaded: lurk')
+        print('extension loaded: utilities')
         self.bot = bot
 
     @commands.command(pass_context=True, description='Example: "pizza or taco or burger"')
     async def pick(self, ctx, *choices: str):
-        '''Pick an element, delimited by "or".'''
+        """Pick an element, delimited by "or"."""
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
         options = ' '.join([str(x) for x in choices]).split(' or ')
@@ -24,7 +24,7 @@ class Lurk:
 
     @commands.command(pass_context=True, description='Just to test if you\'re still there.')
     async def ping(self, ctx):
-        '''PONG!'''
+        """PONG!"""
         author = ctx.message.author
 
         try:
@@ -37,7 +37,7 @@ class Lurk:
 
     @commands.command(pass_context=True, description='Will return a countdown.')
     async def countdown(self, ctx):
-        '''Time until next SU episode.'''
+        """Time until next SU episode."""
         author = ctx.message.author
 
         try:
@@ -51,20 +51,23 @@ class Lurk:
 
                     now = datetime.now(timezone.utc)
                     then = datetime(int(ep[3]), int(ep[4]), int(ep[5]), int(ep[6]), int(ep[7]), tzinfo=timezone.utc)
+
                     if then < now:  # if episode is in the past, skip
                         continue
+
                     td = then - now
                     countdown = ""
+
                     if td.days > 0:
                         countdown = str(td.days) + " days, "
 
                     if (td.seconds // 3600) > 0:
-                        countdown = countdown + str((td.seconds // 3600)) + " hours and "
+                        countdown += str((td.seconds // 3600)) + " hours and "
 
                     if (td.seconds // 60) % 60 == 1:
-                        countdown = countdown + "1 minute "
+                        countdown += "1 minute "
                     else:
-                        countdown = countdown + str((td.seconds // 60) % 60) + " minutes"
+                        countdown = str((td.seconds // 60) % 60) + " minutes"
 
                     if ep[9] == '1':
                         notes = '(but already leaked)'
@@ -86,4 +89,4 @@ class Lurk:
 
 
 def setup(bot):
-    bot.add_cog(Lurk(bot))
+    bot.add_cog(Utilities(bot))

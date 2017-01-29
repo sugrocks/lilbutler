@@ -27,7 +27,7 @@ async def on_ready():
     print('ID: ' + bot.user.id)
     print('------------------')
     # Import our 'modules'
-    bot.load_extension('lurk')
+    bot.load_extension('utilities')
     bot.load_extension('mod')
 
 
