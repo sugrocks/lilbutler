@@ -3,6 +3,7 @@ import requests
 from botutils import del_message
 from discord.ext import commands
 from datetime import datetime, timezone
+from dateutil.relativedelta import relativedelta
 
 cd_epjs = 'https://sug.rocks/countdown/episodes.js'
 
@@ -55,19 +56,22 @@ class Utilities:
                     if then < now:  # if episode is in the past, skip
                         continue
 
-                    td = then - now
-                    countdown = ""
+                    td = relativedelta(then, now)
 
-                    if td.days > 0:
+                    if td.days == 1:
+                        countdown = "a day, "
+                    else:
                         countdown = str(td.days) + " days, "
 
-                    if (td.seconds // 3600) > 0:
-                        countdown += str((td.seconds // 3600)) + " hours and "
+                    if td.hours == 1:
+                        countdown += "1 hour and "
+                    else:
+                        countdown += str(td.hours) + " hours and "
 
-                    if (td.seconds // 60) % 60 == 1:
+                    if td.minutes == 1:
                         countdown += "1 minute "
                     else:
-                        countdown = str((td.seconds // 60) % 60) + " minutes"
+                        countdown += str(td.minutes) + " minutes"
 
                     if ep[9] == '1':
                         notes = '(but already leaked)'
