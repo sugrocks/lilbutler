@@ -10,7 +10,7 @@
             "python_version": "3.6"
         },
         "hash": {
-            "sha256": "43425b39786517a1363374fec1ae1892e5c56536f0933e9db8b9fadce6fe2a49"
+            "sha256": "94882913bd8228498385e4b89abe5a8c8644d46aee71524f899d41604f3bd98b"
         }
     },
     "default": {
@@ -18,11 +18,15 @@
             "hash": "sha256:1a720e8862a41aa22e339373b526f508ef0c8988baf48b84d3fc891a8e237efb",
             "version": "==2.13.0"
         },
+        "python-dateutil": {
+            "hash": "sha256:537bf2a8f8ce6f6862ad705cd68f9e405c0b5db014aa40fa29eab4335d4b1716",
+            "version": "==2.6.0"
+        },
         "discord.py": {
             "git": "https://github.com/Rapptz/discord.py"
         },
         "discord.py from git+https://github.com/Rapptz/discord.py#egg=discord.py": {
-            "hash": "sha256:1f73e6ea7088c11fad87d68f783a8168bef935f300d1785b00cc9b014d108b5b",
+            "hash": "sha256:05ed427af4c9746b65159247208df06295b3533944b3b311b31f2b05fa5f8e5d",
             "version": "==0.16.5"
         },
         "chardet": {
@@ -32,6 +36,10 @@
         "aiohttp": {
             "hash": "sha256:c3e1897726f97d40e067e8b658b2dbdfe216f32b801c5c589212e1b1f9aa8388",
             "version": "==1.0.5"
+        },
+        "six": {
+            "hash": "sha256:0ff78c403d9bccf5a425a6d31a12aa6b47f1c21ca4dc2573a7e2f32a97335eb1",
+            "version": "==1.10.0"
         },
         "async_timeout": {
             "hash": "sha256:d848623229614d2a239375f003c65a0ecf3bcfed3a2fdba6ce83b31a8038c2a0",

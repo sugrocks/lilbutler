@@ -7,6 +7,7 @@ python_version = "3.6"
 
 [packages]
 requests = "*"
+python-dateutil = "*"
 
 [dev-packages]
 flake8 = "*"
