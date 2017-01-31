@@ -35,12 +35,16 @@ tmux
 
 ## Config
 - `bot.token`: the discord bot token
+- `modlogs`: list of `<server id> = <channel id>` where join/leave/ban logs are going to be posted
 - `cleantemp`: list of channels to clean after 100 messages. Put whatever you want as value, only the key counts
 
 **Example:**
 ```ini
 [bot]
 token = youputhereyourverysecrettokenthatyoushouldnotshare
+
+[modlogs]
+274151655795064832 = 274156905080029196
 
 [cleantemp]
 274153487359672320 = True
