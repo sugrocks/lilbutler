@@ -10,7 +10,7 @@ Just a discord bot. It has some commands and it deletes links to other servers.
 
 
 ## Requirements
-- I'd recommand you to have python 3.5+. 3.6 is the best idea.
+- Python 3.6
     + [pipenv](https://github.com/kennethreitz/pipenv)
 - A Discord bot created. Head over there: https://discordapp.com/developers/applications/me
     + Create an app
@@ -25,11 +25,11 @@ Just a discord bot. It has some commands and it deletes links to other servers.
 ## Install
 
 ```bash
-pipenv install
+pipenv install --python $(which python3.6)
 cp config.ini.dist config.ini
 nano config.ini  # see Config below
 tmux
-    pipenv run python3.6 bot.py
+    pipenv run python bot.py
 ```
 
 

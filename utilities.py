@@ -80,7 +80,7 @@ class Utilities:
                     else:
                         notes = ''
 
-                    await self.bot.say('%s: *%s* will air in %s %s' % (author.mention, ep[1][1:-1], countdown, notes))
+                    await self.bot.say('%s: *%s* will air in **%s** %s' % (author.mention, ep[1][1:-1], countdown, notes))
                     postlimit += 1
 
             if postlimit == 0:
