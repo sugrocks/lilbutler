@@ -1,5 +1,7 @@
 import random
 import requests
+import sqlite3
+
 from botutils import del_message
 from discord.ext import commands
 from datetime import datetime, timezone
@@ -22,6 +24,20 @@ class Utilities:
         options = ' '.join([str(x) for x in choices]).split(' or ')
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
         await del_message(self, ctx)
+
+    @commands.command(pass_context=True, description='If you\'ve sucessfully bumped the server, you get a score!')
+    async def bumps(self, ctx):
+        """See how many times you bumped the server"""
+        db = sqlite3.connect('lilbutler.db')
+        with db:
+            db_cur = db.cursor()
+            db_cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (ctx.message.author.id, ctx.message.server.id))
+            row = db_cur.fetchone()
+
+            if row is None:
+                await self.bot.say('%s: You never bumped this server. :(' % ctx.message.author.mention)
+            else:
+                await self.bot.say('%s: You bumped this server %s times!' % (ctx.message.author.mention, str(row[0])))
 
     @commands.command(pass_context=True, description='Just to test if you\'re still there.')
     async def ping(self, ctx):

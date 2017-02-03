@@ -2,8 +2,9 @@ import os
 import logging
 import asyncio
 import discord
-import configparser
 import sqlite3
+import configparser
+
 from shutil import copyfile
 from botutils import is_mod
 from datetime import datetime
@@ -56,20 +57,20 @@ async def on_message(message):
         last_bumper = message.author
 
     if last_bumper is not None and message.author.id == '222853335877812224' and message.content.startswith('Bumped!'):
-        bump_score = ''
         with db:
-            cur = db.cursor()
-            cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (last_bumper.id, message.server.id))
-            row = cur.fetchone()
+            db_cur = db.cursor()
+            db_cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (last_bumper.id, message.server.id))
+            row = db_cur.fetchone()
+
             # Did that person bump once?
             if row is None:
                 # If not, add it to the DB with the value of "1"
-                cur.execute("INSERT INTO bumpers(userId, serverId, bumps) VALUES(?, ?, 1)", (last_bumper.id, message.server.id))
+                db_cur.execute("INSERT INTO bumpers(userId, serverId, bumps) VALUES(?, ?, 1)", (last_bumper.id, message.server.id))
                 bump_score = 'This is your first bump here!'
             else:
                 # If yes, increment value
                 c = int(row[0]) + 1
-                cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", (c, last_bumper.id, message.server.id))
+                db_cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", (c, last_bumper.id, message.server.id))
                 if c == 2:
                     bump_score = 'This is your second bump!'
                 elif c == 3:
