@@ -44,6 +44,8 @@ async def on_ready():
 # On new messages
 @bot.event
 async def on_message(message):
+    global last_bumper
+
     # Remove messages if they're in the blacklist
     blacklist = ['discord.gg', 'discordapp.com/invite']
     if any(thing in message.content for thing in blacklist) and not is_mod(message):
@@ -53,7 +55,7 @@ async def on_message(message):
     if message.content.startswith('=bump'):
         last_bumper = message.author
 
-    if message.author.id == '81293337012744192' and message.content.startswith('Bumped!'):
+    if last_bumper is not None and message.author.id == '222853335877812224' and message.content.startswith('Bumped!'):
         bump_score = ''
         with db:
             cur = db.cursor()
@@ -66,8 +68,8 @@ async def on_message(message):
                 bump_score = 'This is your first bump here!'
             else:
                 # If yes, increment value
-                c = int(row[0])
-                cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", ((c + 1), last_bumper.id, message.server.id))
+                c = int(row[0]) + 1
+                cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", (c, last_bumper.id, message.server.id))
                 if c == 2:
                     bump_score = 'This is your second bump!'
                 elif c == 3:
