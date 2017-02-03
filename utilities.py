@@ -25,7 +25,7 @@ class Utilities:
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
         await del_message(self, ctx)
 
-    @commands.command(pass_context=True, description='If you\'ve sucessfully bumped the server, you get a score!')
+    @commands.command(pass_context=True, description='Getting successfully bumps from ServerHound increment your score.')
     async def bumps(self, ctx):
         """See how many times you bumped the server"""
         db = sqlite3.connect('lilbutler.db')

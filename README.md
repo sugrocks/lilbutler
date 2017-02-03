@@ -57,7 +57,9 @@ token = youputhereyourverysecrettokenthatyoushouldnotshare
 ## Commands
 _(`*` means the user needs the `kick` role in the channel, `^` for server admin)_
 
-- `!countdown`: Time until next SU episode.  
+- `!bumps`: See how many times you bumped the server
+    + Getting successfully bumps from ServerHound increment your score.
+- `!countdown`: Time until next SU episode.
     + Will return a countdown.
 - `!pick`: Pick an element, delimited by "or".
     + Example: `pizza or taco or burger`
