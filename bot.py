@@ -1,7 +1,10 @@
+import os
 import logging
 import asyncio
 import discord
 import configparser
+import sqlite3
+from shutil import copyfile
 from botutils import is_mod
 from datetime import datetime
 from discord.ext import commands
@@ -21,6 +24,10 @@ conf.read('./config.ini')
 # Setup discord-stuff
 description = '"You people have too much money!"'
 bot = commands.Bot(command_prefix='!', description=description)
+
+# init
+last_bumper = None
+db = None
 
 
 # On bot login
@@ -42,6 +49,37 @@ async def on_message(message):
     if any(thing in message.content for thing in blacklist) and not is_mod(message):
         await bot.delete_message(message)
         return
+
+    if message.content.startswith('=bump'):
+        last_bumper = message.author
+
+    if message.author.id == '81293337012744192' and message.content.startswith('Bumped!'):
+        bump_score = ''
+        with db:
+            cur = db.cursor()
+            cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (last_bumper.id, message.server.id))
+            row = cur.fetchone()
+            # Did that person bump once?
+            if row is None:
+                # If not, add it to the DB with the value of "1"
+                cur.execute("INSERT INTO bumpers(userId, serverId, bumps) VALUES(?, ?, 1)", (last_bumper.id, message.server.id))
+                bump_score = 'This is your first bump here!'
+            else:
+                # If yes, increment value
+                c = int(row[0])
+                cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", ((c + 1), last_bumper.id, message.server.id))
+                if c == 2:
+                    bump_score = 'This is your second bump!'
+                elif c == 3:
+                    bump_score = 'A third bump? How nice of you. :)'
+                elif c == 10:
+                    bump_score = 'This is your tenth bump! Woo!'
+                elif c == 50:
+                    bump_score = 'You are now a bump master: 50 bumps !'
+                else:
+                    bump_score = 'You bumped this server %s times.' % (str(c))
+
+        await bot.send_message(message.channel, 'Thank you, %s! %s' % (last_bumper.mention, bump_score))
 
     # And now go to the bot commands
     await bot.process_commands(message)
@@ -131,5 +169,21 @@ async def clean_temp():
 
 # Launch
 if __name__ == '__main__':
+    try:
+        # If there's no database file, copy from the empty one
+        if not os.path.isfile('lilbutler.db'):
+            copyfile('lilbutler.empty.db', 'lilbutler.db')
+
+        # Connect to SQLite3 DB
+        db = sqlite3.connect('lilbutler.db')
+        with db:
+            cur = db.cursor()
+            cur.execute('SELECT SQLITE_VERSION()')
+            data = cur.fetchone()
+            print("SQLite version: %s" % data)
+    except Exception as e:
+        print("Error : " + str(e))
+        exit(1)
+
     bot.loop.create_task(clean_temp())
     bot.run(conf.get('bot', 'token'))
