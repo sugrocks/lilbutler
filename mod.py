@@ -1,5 +1,7 @@
+import configparser
+
 from discord.ext import commands
-from botutils import del_message, is_admin, is_mod
+from botutils import del_message, is_mod
 
 
 class Mod:
@@ -7,6 +9,8 @@ class Mod:
     def __init__(self, bot):
         print('extension loaded: mod')
         self.bot = bot
+        self.conf = configparser.ConfigParser()
+        self.conf.read('./config.ini')
 
     def is_me(self, m):
         return m.author == self.bot.user
@@ -14,7 +18,7 @@ class Mod:
     @commands.command(pass_context=True, description='But I might come back!')
     async def sleep(self, ctx):
         """Stops the bot."""
-        if not is_admin(ctx.message):
+        if ctx.message.author.id != self.conf.get('bot', 'owner_id'):
             return
 
         await del_message(self, ctx)

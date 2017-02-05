@@ -34,7 +34,8 @@ tmux
 
 
 ## Config
-- `bot.token`: the discord bot token
+- `bot.token`: the discord bot token (needed to login to Discord)
+- `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
 - `modlogs`: list of `<server id> = <channel id>` where join/leave/ban logs are going to be posted
 - `cleantemp`: list of channels to clean after 100 messages. Put whatever you want as value, only the key counts
 
@@ -42,6 +43,7 @@ tmux
 ```ini
 [bot]
 token = youputhereyourverysecrettokenthatyoushouldnotshare
+owner_id = 81293337012744192
 
 [modlogs]
 274151655795064832 = 274156905080029196
@@ -55,20 +57,20 @@ token = youputhereyourverysecrettokenthatyoushouldnotshare
 
 
 ## Commands
-_(`*` means the user needs the `kick` role in the channel, `^` for server admin)_
+_(`*` means the user needs the `kick` role in the channel, `^` for owner)_
 
-- `!bumps`: See how many times you bumped the server
+- `~bumps`: See how many times you bumped the server
     + Getting successfully bumps from ServerHound increment your score.
-- `!countdown`: Time until next SU episode.
+- `~countdown`: Time until next SU episode.
     + Will return a countdown.
-- `!pick`: Pick an element, delimited by "or".
+- `~pick`: Pick an element, delimited by "or".
     + Example: `pizza or taco or burger`
-- `!ping`: PONG!
+- `~ping`: PONG!
     + Just to test if you're still there.
-- `*` `!clean`: The bot deletes is own messages.
+- `*` `~clean`: The bot deletes is own messages.
     + In case the bot went crazy...
-- `*` `!nuke <n|50>`: Delete a number of messages. (`n` is optional)
+- `*` `~nuke <n|50>`: Delete a number of messages. (`n` is optional)
     + Specify a number or it will clean the last 50 messages.
-- `^` `!sleep`: Stops the bot.
+- `^` `~sleep`: Stops the bot.
     + But it might come back! (If you put it in a loop or something)
-- `!help <command|category>`: Display the help message
+- `~help <command|category>`: Display the help message
