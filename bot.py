@@ -24,7 +24,7 @@ conf.read('./config.ini')
 
 # Setup discord-stuff
 description = '"You people have too much money!"'
-bot = commands.Bot(command_prefix='!', description=description)
+bot = commands.Bot(command_prefix='~', description=description)
 
 # init
 last_bumper = None
