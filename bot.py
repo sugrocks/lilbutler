@@ -93,7 +93,12 @@ async def on_message(message):
 async def on_member_join(member):
     # Notify in defined channel for the server
     server = member.server
-    chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+
+    try:
+        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+    except configparser.NoOptionError:
+        return
+
     if chan is None:
         return  # If there's nothing, don't do anything
 
@@ -112,7 +117,12 @@ async def on_member_join(member):
 async def on_member_remove(member):
     # Notify in defined channel for the server
     server = member.server
-    chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+
+    try:
+        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+    except configparser.NoOptionError:
+        return
+
     if chan is None:
         return  # If there's nothing, don't do anything
 
@@ -136,7 +146,12 @@ async def on_member_remove(member):
 async def on_member_ban(member):
     # Notify in defined channel for the server
     server = member.server
-    chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+
+    try:
+        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+    except configparser.NoOptionError:
+        return
+
     if chan is None:
         return  # If there's nothing, don't do anything
 
