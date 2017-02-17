@@ -89,7 +89,7 @@ async def on_message(message):
                 elif c == 100:
                     bump_score = 'Behold. A new **bump master** arrived, with 100 bumps to their score!'
                 elif c == 200:
-                    bump_score = 'Dude what. 200 times? That\' determination.'
+                    bump_score = 'Dude what. 200 times? That\'s determination.'
                 else:
                     bump_score = 'You bumped this server %s times.' % (str(c))
 
