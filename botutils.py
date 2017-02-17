@@ -7,10 +7,6 @@ def is_mod(message):
     return message.channel.permissions_for(message.author).kick_members
 
 
-def is_me(self, m):
-    return m.author == self.bot.user
-
-
 async def del_message(self, ctx):
     if ctx.message.server:
         await self.bot.delete_message(ctx.message)

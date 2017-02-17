@@ -1,7 +1,7 @@
 import configparser
 
 from discord.ext import commands
-from botutils import del_message, is_mod, is_me
+from botutils import del_message, is_mod
 
 
 class Mod:
@@ -11,6 +11,9 @@ class Mod:
         self.bot = bot
         self.conf = configparser.ConfigParser()
         self.conf.read('./config.ini')
+
+    def is_me(self, message):
+        return message.author == self.bot.user
 
     @commands.command(pass_context=True, description='But I might come back!')
     async def sleep(self, ctx):
@@ -31,7 +34,7 @@ class Mod:
 
         try:
             await self.bot.send_typing(ctx.message.channel)
-            deleted = await self.bot.purge_from(ctx.message.channel, before=ctx.message, limit=1000, check=is_me)
+            deleted = await self.bot.purge_from(ctx.message.channel, before=ctx.message, limit=1000, check=self.is_me)
             if len(deleted) > 2:
                 await self.bot.say('Deleted %d messages.' % len(deleted))
             await del_message(self, ctx)
