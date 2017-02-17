@@ -100,7 +100,7 @@ class Utilities:
                     else:
                         notes = ''
 
-                    lines += '_%s_ will air in **%s** %s\n' % (ep[1][1:-1], countdown, notes)
+                    lines += '\n_%s_ will air in **%s** %s' % (ep[1][1:-1], countdown, notes)
                     postlimit += 1
 
             if postlimit == 0:
