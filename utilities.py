@@ -64,6 +64,7 @@ class Utilities:
             await self.bot.send_typing(ctx.message.channel)
             cd = requests.get(cd_epjs, stream=True)
             postlimit = 0
+            lines = ''
             for line in cd.iter_lines():
                 if line and line.startswith(b'addEpisode(') and postlimit < 3:
                     ep = line.decode('utf-8').replace("addEpisode(", '')[:-1]
@@ -99,11 +100,13 @@ class Utilities:
                     else:
                         notes = ''
 
-                    await self.bot.say('%s: *%s* will air in **%s** %s' % (author.mention, ep[1][1:-1], countdown, notes))
+                    lines += '_%s_ will air in **%s** %s\n' % (ep[1][1:-1], countdown, notes)
                     postlimit += 1
 
             if postlimit == 0:
                 await self.bot.say('%s: It looks like I don\'t know when the next episode is airing.' % author.mention)
+            else:
+                await self.bot.say('%s: %s' % (author.mention, lines))
 
         except Exception as e:
             await self.bot.say('%s: I\'m sorry, I can\'t help you with that.' % author.mention)
