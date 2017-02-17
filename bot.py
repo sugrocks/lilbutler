@@ -66,19 +66,30 @@ async def on_message(message):
             if row is None:
                 # If not, add it to the DB with the value of "1"
                 db_cur.execute("INSERT INTO bumpers(userId, serverId, bumps) VALUES(?, ?, 1)", (last_bumper.id, message.server.id))
-                bump_score = 'This is your first bump here!'
+                bump_score = 'This is your first bump here! You can use `~bumps` to see your score.'
             else:
                 # If yes, increment value
                 c = int(row[0]) + 1
                 db_cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", (c, last_bumper.id, message.server.id))
                 if c == 2:
-                    bump_score = 'This is your second bump!'
+                    bump_score = 'This is your second bump, keep going!'
                 elif c == 3:
                     bump_score = 'A third bump? How nice of you. :)'
                 elif c == 10:
                     bump_score = 'This is your tenth bump! Woo!'
+                elif c == 25:
+                    bump_score = 'You bumped this server 25 times! Pretty impressive.'
                 elif c == 50:
-                    bump_score = 'You are now a bump master: 50 bumps !'
+                    if last_bumper.id == '173498245656477696':
+                        bump_score = 'So, MP. That\'s 50 times. I guess nothing can stop you now.'
+                    else:
+                        bump_score = 'You bumped this server 50 times, time to hit the hundredth!'
+                elif c == 90:
+                    bump_score = 'You bumped this server 90 times.\n _Bumping in the 90\'s_ 🎶'
+                elif c == 100:
+                    bump_score = 'Behold. A new **bump master** arrived, with 100 bumps to their score!'
+                elif c == 200:
+                    bump_score = 'Dude what. 200 times? That\' determination.'
                 else:
                     bump_score = 'You bumped this server %s times.' % (str(c))
 

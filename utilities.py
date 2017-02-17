@@ -17,13 +17,16 @@ class Utilities:
         self.bot = bot
 
     @commands.command(pass_context=True, description='Example: "pizza or taco or burger"')
-    async def pick(self, ctx, *choices: str):
+    async def pick(self, ctx, *, choices: str):
         """Pick an element, delimited by "or"."""
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
-        options = ' '.join([str(x) for x in choices]).split(' or ')
+        options = choices.split(' or ')
+        if len(options) < 2:
+            await self.bot.say('%s: I need two or more elements to choose.' % author.mention)
+            return
+
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
-        await del_message(self, ctx)
 
     @commands.command(pass_context=True, description='Getting successfully bumps from ServerHound increment your score.')
     async def bumps(self, ctx):
@@ -102,7 +105,6 @@ class Utilities:
             if postlimit == 0:
                 await self.bot.say('%s: It looks like I don\'t know when the next episode is airing.' % author.mention)
 
-            await del_message(self, ctx)
         except Exception as e:
             await self.bot.say('%s: I\'m sorry, I can\'t help you with that.' % author.mention)
             print('>>> ERROR Countdown ', e)

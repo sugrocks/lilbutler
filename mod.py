@@ -1,7 +1,7 @@
 import configparser
 
 from discord.ext import commands
-from botutils import del_message, is_mod
+from botutils import del_message, is_mod, is_me
 
 
 class Mod:
@@ -12,13 +12,11 @@ class Mod:
         self.conf = configparser.ConfigParser()
         self.conf.read('./config.ini')
 
-    def is_me(self, m):
-        return m.author == self.bot.user
-
     @commands.command(pass_context=True, description='But I might come back!')
     async def sleep(self, ctx):
         """Stops the bot."""
         if ctx.message.author.id != self.conf.get('bot', 'owner_id'):
+            await self.bot.say('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
             return
 
         await del_message(self, ctx)
@@ -28,13 +26,14 @@ class Mod:
     async def clean(self, ctx):
         """Delete my own messages."""
         if not is_mod(ctx.message):
+            await self.bot.say('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
             return
 
         try:
             await self.bot.send_typing(ctx.message.channel)
-            deleted = await self.bot.purge_from(ctx.message.channel, before=ctx.message, limit=1000, check=self.is_me)
+            deleted = await self.bot.purge_from(ctx.message.channel, before=ctx.message, limit=1000, check=is_me)
             if len(deleted) > 2:
-                await self.bot.say('%d deleted messages.' % len(deleted))
+                await self.bot.say('Deleted %d messages.' % len(deleted))
             await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR clean ', e)
@@ -43,13 +42,14 @@ class Mod:
     async def nuke(self, ctx, nbr: int = 50):
         """Delete a number of messages."""
         if not is_mod(ctx.message):
+            await self.bot.say('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
             return
 
         try:
             await self.bot.send_typing(ctx.message.channel)
             deleted = await self.bot.purge_from(ctx.message.channel, before=ctx.message, limit=nbr)
             if len(deleted) > 2:
-                await self.bot.say('%d deleted messages.' % len(deleted))
+                await self.bot.say('Deleted %d messages.' % len(deleted))
             await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR clean ', e)
