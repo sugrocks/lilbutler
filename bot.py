@@ -80,12 +80,9 @@ async def on_message(message):
                 elif c == 25:
                     bump_score = 'You bumped this server 25 times! Pretty impressive.'
                 elif c == 50:
-                    if last_bumper.id == '173498245656477696':
-                        bump_score = 'So, MP. That\'s 50 times. I guess nothing can stop you now.'
-                    else:
-                        bump_score = 'You bumped this server 50 times, time to hit the hundredth!'
+                    bump_score = 'You bumped this server 50 times, time to hit the hundredth!'
                 elif c == 90:
-                    bump_score = 'You bumped this server 90 times.\n _Bumping in the 90\'s_ 🎶'
+                    bump_score = 'You bumped this server 90 times.\n _Bumping in the 90\'s_ 🎶\nhttps://www.youtube.com/watch?v=XCiDuy4mrWU'
                 elif c == 100:
                     bump_score = 'Behold. A new **bump master** arrived, with 100 bumps to their score!'
                 elif c == 200:
