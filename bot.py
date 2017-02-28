@@ -1,4 +1,5 @@
 import os
+import random
 import logging
 import asyncio
 import discord
@@ -57,6 +58,8 @@ async def on_message(message):
         last_bumper = message.author
 
     if last_bumper is not None and message.author.id == '222853335877812224' and message.content.startswith('Bumped!'):
+        emojis = ['💃', '😎', '🙏', '🙌', '👏', '👍', '😁']
+
         with db:
             db_cur = db.cursor()
             db_cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (last_bumper.id, message.server.id))
@@ -81,6 +84,8 @@ async def on_message(message):
                     bump_score = 'You bumped this server 25 times! Pretty impressive.'
                 elif c == 50:
                     bump_score = 'You bumped this server 50 times, time to hit the hundredth!'
+                elif c == 69:
+                    bump_score = 'You bumped this server 👀 times.'
                 elif c == 90:
                     bump_score = 'You bumped this server 90 times.\n _Bumping in the 90\'s_ 🎶\nhttps://www.youtube.com/watch?v=XCiDuy4mrWU'
                 elif c == 100:
@@ -90,7 +95,7 @@ async def on_message(message):
                 else:
                     bump_score = 'You bumped this server %s times.' % (str(c))
 
-        await bot.send_message(message.channel, 'Thank you, %s! %s' % (last_bumper.mention, bump_score))
+        await bot.send_message(message.channel, 'Thank you, %s! %s %s' % (last_bumper.mention, bump_score, random.choice(emojis)))
 
     # And now go to the bot commands
     await bot.process_commands(message)
