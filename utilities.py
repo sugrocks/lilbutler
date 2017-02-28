@@ -1,6 +1,7 @@
 import random
-import requests
 import sqlite3
+import discord
+import requests
 
 from botutils import del_message
 from discord.ext import commands
@@ -16,7 +17,7 @@ class Utilities:
         print('extension loaded: utilities')
         self.bot = bot
 
-    @commands.command(pass_context=True, description='Example: "pizza or taco or burger"')
+    @commands.command(pass_context=True, description='Example: "pizza or taco or burger".')
     async def pick(self, ctx, *, choices: str):
         """Pick an element, delimited by "or"."""
         author = ctx.message.author
@@ -28,9 +29,22 @@ class Utilities:
 
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
 
+    @commands.command(pass_context=True, description='Add a name/mention as a parameter to know for someone else.')
+    async def howlong(self, ctx, *, user: discord.Member=None):
+        """Ask when someone joined the server."""
+        author = ctx.message.author
+        await self.bot.send_typing(ctx.message.channel)
+
+        if user is None:
+            user = author
+
+        joined = user.joined_at.strftime('%b %d %Y at %I:%M:%S %p UTC')
+
+        await self.bot.say('%s: %s joined this server %s' % (author.mention, user.name, joined))
+
     @commands.command(pass_context=True, description='Getting successfully bumps from ServerHound increment your score.')
     async def bumps(self, ctx):
-        """See how many times you bumped the server"""
+        """See how many times you bumped the server."""
         db = sqlite3.connect('lilbutler.db')
         with db:
             db_cur = db.cursor()

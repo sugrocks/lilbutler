@@ -59,12 +59,14 @@ owner_id = 81293337012744192
 ## Commands
 _(`*` means the user needs the `kick` role in the channel, `^` for owner)_
 
-- `~bumps`: See how many times you bumped the server
-    + Getting successfully bumps from ServerHound increment your score.
 - `~countdown`: Time until next SU episode.
     + Will return a countdown.
 - `~pick`: Pick an element, delimited by "or".
-    + Example: `pizza or taco or burger`
+    + Example: `pizza or taco or burger`.
+- `~howlong`: Get when you joined the server.
+    + Add a name/mention as a parameter to know for someone else.
+- `~bumps`: See how many times you bumped the server.
+    + Getting successfully bumps from ServerHound increment your score.
 - `~ping`: PONG!
     + Just to test if you're still there.
 - `*` `~clean`: The bot deletes is own messages.
