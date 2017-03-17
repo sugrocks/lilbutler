@@ -86,14 +86,34 @@ class Utilities:
             await self.bot.say('%s: Unknown date given (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
             return
 
-        em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
-
-        for slot in sch[param]:
-            em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
-
         # Send message with embed
-        await self.bot.send_message(author, embed=em)
-        await self.bot.say('%s: Please check your PMs.' % author.mention)
+        try:
+            i = 1
+            more_embed = False
+            em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
+            for slot in sch[param]:
+                # We can't have more than 25 fields, let's cut at 20 and send the rest in a second message
+                if i < 21:
+                    em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
+                else:
+                    more_embed = True
+                i += 1
+
+            await self.bot.send_message(author, embed=em)
+
+            # Send the second part
+            if more_embed:
+                em = discord.Embed(title='Schedule for ' + param + ' (part 2)', colour=0xEC018C)  # color: CN's pink
+                for slot in sch[param][20:]:
+                    em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
+
+                await self.bot.send_message(author, embed=em)
+
+            # It's supposed to net tell the user to check their PMs when already in PM but oh well
+            if ctx.message.channel is not None:
+                await self.bot.say('%s: Please check your PMs.' % author.mention)
+        except discord.errors.Forbidden:
+            await self.bot.say('%s: It looks like you disabled PMs from strangers. I can\'t send the message.' % author.mention)
 
     @commands.command(pass_context=True, description='Will return a countdown.')
     async def countdown(self, ctx):
