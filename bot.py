@@ -4,11 +4,13 @@ import logging
 import asyncio
 import discord
 import sqlite3
+import requests
 import configparser
 
 from shutil import copyfile
 from botutils import is_mod
 from datetime import datetime
+from discord import utils as dutils
 from discord.ext import commands
 from dateutil.relativedelta import relativedelta
 
@@ -30,6 +32,7 @@ bot = commands.Bot(command_prefix='~', description=description)
 # init
 last_bumper = None
 db = None
+banlist = []
 
 
 # On bot login
@@ -41,6 +44,11 @@ async def on_ready():
     # Import our 'modules'
     bot.load_extension('utilities')
     bot.load_extension('mod')
+    # Load banlist
+    banreq = requests.get('https://bans.discordlist.net/api')
+    for i in banreq.json():
+        banlist.append(str(i[0]).strip())
+    print('banlist loaded')
 
 
 # On new messages
@@ -104,9 +112,23 @@ async def on_message(message):
 # On user join
 @bot.event
 async def on_member_join(member):
-    # Notify in defined channel for the server
     server = member.server
 
+    muted = False
+
+    # Check if the user is in a ban list
+    if str(member.id) in banlist:
+        # mute him if the server can do it
+        try:
+            muteid = conf.get('autoban', str(server.id))  # get channel id who gets mod logs
+            role = dutils.get(server.roles, id=muteid)
+            await bot.add_roles(member, role)
+            muted = True
+        except:
+            raise
+            pass
+
+    # Notify in defined channel for the server
     try:
         chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
@@ -116,8 +138,12 @@ async def on_member_join(member):
         return  # If there's nothing, don't do anything
 
     # Build an embed
-    em = discord.Embed(title=member.name + ' joined the server', description='Say hi to ' + member.mention,
-                       colour=0x23D160, timestamp=datetime.utcnow())  # color: green
+    if muted:
+        em = discord.Embed(title=member.name + ' joined the server [muted]', description='**NOTE**: ' + member.mention + ' is now muted.',
+                           colour=0x23D160, timestamp=datetime.utcnow())  # color: green
+    else:
+        em = discord.Embed(title=member.name + ' joined the server', description='Say hi to ' + member.mention,
+                           colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
 

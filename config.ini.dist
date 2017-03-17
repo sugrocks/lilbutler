@@ -2,6 +2,11 @@
 token =
 owner_id =
 
+[autoban]
+; server id = mute role id
+
 [modlogs]
+; server id = logs channel id
 
 [cleantemp]
+; channel id = true
