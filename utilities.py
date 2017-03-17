@@ -69,6 +69,32 @@ class Utilities:
             await self.bot.say('%s: PONG ?' % author.mention)
             print('>>> ERROR Ping ', e)
 
+    @commands.command(pass_context=True, description='Ask using the date in this format: YYYY-MM-DD')
+    async def cn(self, ctx, *, param: str=None):
+        """Get Cartoon Network's schedule"""
+        author = ctx.message.author
+        await self.bot.send_typing(ctx.message.channel)
+
+        schreq = requests.get('https://api.sug.rocks/ccnschedule.json')
+        sch = schreq.json()
+
+        if param is None:
+            await self.bot.say('%s: Please specify a date (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
+            return
+
+        if param not in sch:
+            await self.bot.say('%s: Unknown date given (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
+            return
+
+        em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
+
+        for slot in sch[param]:
+            em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
+
+        # Send message with embed
+        await self.bot.send_message(author, embed=em)
+        await self.bot.say('%s: Please check your PMs.' % author.mention)
+
     @commands.command(pass_context=True, description='Will return a countdown.')
     async def countdown(self, ctx):
         """Time until next SU episode."""

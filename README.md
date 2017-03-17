@@ -61,6 +61,8 @@ _(`*` means the user needs the `kick` role in the channel, `^` for owner)_
 
 - `~countdown`: Time until next SU episode.
     + Will return a countdown.
+- `~cn`: Get Cartoon Network's schedule
+    + Ask using the date in this format: YYYY-MM-DD
 - `~pick`: Pick an element, delimited by "or".
     + Example: `pizza or taco or burger`.
 - `~howlong`: Get when you joined the server.
