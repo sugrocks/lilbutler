@@ -6,6 +6,7 @@ import discord
 import sqlite3
 import requests
 import configparser
+import better_exceptions
 
 from shutil import copyfile
 from botutils import is_mod
@@ -30,6 +31,7 @@ description = '"You people have too much money!"'
 bot = commands.Bot(command_prefix='~', description=description)
 
 # init
+better_exceptions.MAX_LENGTH = None
 last_bumper = None
 db = None
 banlist = []

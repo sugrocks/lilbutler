@@ -1,3 +1,4 @@
 git+https://github.com/Rapptz/discord.py#egg=discord.py
+better_exceptions
 python-dateutil
 requests
