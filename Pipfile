@@ -8,6 +8,7 @@ flake8 = "*"
 [packages]
 requests = "*"
 python-dateutil = "*"
+better-exceptions = "*"
 
 [packages."discord.py"]
 git = "https://github.com/Rapptz/discord.py.git"
