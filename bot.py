@@ -34,6 +34,7 @@ bot = commands.Bot(command_prefix='~', description=description)
 better_exceptions.MAX_LENGTH = None
 last_bumper = None
 db = None
+server_bump_wait = {}
 banlist = []
 
 
@@ -68,9 +69,19 @@ async def on_message(message):
         last_bumper = message.author
 
     if last_bumper is not None and message.author.id == '222853335877812224' and message.content.startswith('Bumped!'):
+        if message.server.id in server_bump_wait:
+            # Don't count in the server if last bump was under 30 minutes (fix against lag from the bump bot)
+            if int(datetime.now().timestamp()) < server_bump_wait[message.server.id] + 1800:
+                return
+
+        # Save timestamp since last bump
+        server_bump_wait[message.server.id] = int(datetime.now().timestamp())
+
+        # A list of happy emojis when someone bump the server
         emojis = ['💃', '😎', '🙏', '🙌', '👏', '👍', '😁']
 
         with db:
+            # Let's get informations about our user in this server...
             db_cur = db.cursor()
             db_cur.execute("SELECT bumps FROM bumpers WHERE userId=? AND serverId=?", (last_bumper.id, message.server.id))
             row = db_cur.fetchone()
@@ -84,6 +95,8 @@ async def on_message(message):
                 # If yes, increment value
                 c = int(row[0]) + 1
                 db_cur.execute("UPDATE bumpers SET bumps=? WHERE userId=? AND serverId=?", (c, last_bumper.id, message.server.id))
+
+                # And let's display a nice message
                 if c == 2:
                     bump_score = 'This is your second bump, keep going!'
                 elif c == 3:
@@ -115,7 +128,6 @@ async def on_message(message):
 @bot.event
 async def on_member_join(member):
     server = member.server
-
     muted = False
 
     # Check if the user is in a ban list
