@@ -75,8 +75,9 @@ class Utilities:
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
 
-        schreq = requests.get('https://api.sug.rocks/ccnschedule.json')
+        schreq = requests.get('https://api.sug.rocks/cnschedule.json')
         sch = schreq.json()
+        sch.pop('_')
 
         if param is None:
             await self.bot.say('%s: Please specify a date (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
@@ -88,28 +89,55 @@ class Utilities:
 
         # Send message with embed
         try:
-            i = 1
-            more_embed = False
-            em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
-            for slot in sch[param]:
+            
+            if sch[param]['source'] == 'Cartoon Network':
+                em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
+            else:
+                em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it)', colour=0xACFFAD)  # color: Screener Green
+
+            for slot in sch[param]['schedule'][:20]:
                 # We can't have more than 25 fields, let's cut at 20 and send the rest in a second message
-                if i < 21:
-                    em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
-                else:
-                    more_embed = True
-                i += 1
+                em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
             await self.bot.send_message(author, embed=em)
 
             # Send the second part
-            if more_embed:
-                em = discord.Embed(title='Schedule for ' + param + ' (part 2)', colour=0xEC018C)  # color: CN's pink
-                for slot in sch[param][20:]:
+            if len(sch[param]['schedule']) > 20:
+                if sch[param]['source'] == 'Cartoon Network':
+                    em = discord.Embed(title='Schedule for ' + param + ' (part 2)', colour=0xEC018C)
+                else:
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 2)', colour=0xACFFAD)
+
+                for slot in sch[param]['schedule'][20:40]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
                 await self.bot.send_message(author, embed=em)
 
-            # It's supposed to net tell the user to check their PMs when already in PM but oh well
+            # And third if needed
+            if len(sch[param]['schedule']) > 40:
+                if sch[param]['source'] == 'Cartoon Network':
+                    em = discord.Embed(title='Schedule for ' + param + ' (part 3)', colour=0xEC018C)
+                else:
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 3)', colour=0xACFFAD)
+
+                for slot in sch[param]['schedule'][40:60]:
+                    em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
+
+                await self.bot.send_message(author, embed=em)
+
+            # Heck, we never know!
+            if len(sch[param]['schedule']) > 60:
+                if sch[param]['source'] == 'Cartoon Network':
+                    em = discord.Embed(title='Schedule for ' + param + ' (part 4)', colour=0xEC018C)
+                else:
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 4)', colour=0xACFFAD)
+
+                for slot in sch[param]['schedule'][60:]:
+                    em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
+
+                await self.bot.send_message(author, embed=em)
+
+            # It's supposed to not tell the user to check their PMs when already in PM but oh well
             if ctx.message.channel is not None:
                 await self.bot.say('%s: Please check your PMs.' % author.mention)
         except discord.errors.Forbidden:
