@@ -89,7 +89,6 @@ class Utilities:
 
         # Send message with embed
         try:
-            
             if sch[param]['source'] == 'Cartoon Network':
                 em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
             else:
