@@ -10,3 +10,6 @@ owner_id =
 
 [cleantemp]
 ; channel id = true
+
+[savepics]
+; channel id = path to folder

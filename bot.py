@@ -123,6 +123,20 @@ async def on_message(message):
     # And now go to the bot commands
     await bot.process_commands(message)
 
+    if len(message.attachments) > 0:
+        try:
+            save_path = conf.get('savepics', str(message.channel.id))  # get channel id who gets mod logs
+            if save_path:
+                for attach in message.attachments:
+                    r = requests.get(attach['url'])
+                    with open(save_path + attach['filename'], 'wb') as f:
+                        for chunk in r.iter_content(chunk_size=1024): 
+                            if chunk: # filter out keep-alive new chunks
+                                f.write(chunk)
+                                f.flush()
+        except configparser.NoOptionError:
+            pass
+
 
 # On user join
 @bot.event
