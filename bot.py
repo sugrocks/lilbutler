@@ -130,8 +130,8 @@ async def on_message(message):
                 for attach in message.attachments:
                     r = requests.get(attach['url'])
                     with open(save_path + attach['filename'], 'wb') as f:
-                        for chunk in r.iter_content(chunk_size=1024): 
-                            if chunk: # filter out keep-alive new chunks
+                        for chunk in r.iter_content(chunk_size=1024):
+                            if chunk:  # filter out keep-alive new chunks
                                 f.write(chunk)
                                 f.flush()
         except configparser.NoOptionError:

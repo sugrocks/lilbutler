@@ -8,7 +8,7 @@ from discord.ext import commands
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
-cd_epjs = 'https://sug.rocks/countdown/episodes.js'
+cd_json = 'https://sug.rocks/countdown/episodes.json'
 
 
 class Utilities:
@@ -149,16 +149,13 @@ class Utilities:
 
         try:
             await self.bot.send_typing(ctx.message.channel)
-            cd = requests.get(cd_epjs, stream=True)
-            postlimit = 0
+            cd = requests.get(cd_json).json()
             lines = ''
-            for line in cd.iter_lines():
-                if line and line.startswith(b'addEpisode(') and postlimit < 3:
-                    ep = line.decode('utf-8').replace("addEpisode(", '')[:-1]
-                    ep = [x.lstrip() for x in ep.split(',')]
-
+            postlimit = 0
+            for ep in cd:
+                if postlimit < 3:
                     now = datetime.now(timezone.utc)
-                    then = datetime(int(ep[3]), int(ep[4]), int(ep[5]), int(ep[6]), int(ep[7]), tzinfo=timezone.utc)
+                    then = datetime(ep['year'], ep['month'], ep['day'], ep['hour'], ep['minute'], tzinfo=timezone.utc)
 
                     if then < now:  # if episode is in the past, skip
                         continue
@@ -180,17 +177,17 @@ class Utilities:
                     else:
                         countdown += str(td.minutes) + " minutes"
 
-                    if ep[9] == '1':
+                    if ep['leaked']:
                         notes = '(but already leaked)'
-                    elif ep[10] == '1':
+                    elif ep['supposed']:
                         notes = '(supposed)'
                     else:
                         notes = ''
 
-                    if ep[11] == '1':
-                        lines += '\n_%s_ (unknown date)' % ep[1][1:-1]
+                    if ep['unknown']:
+                        lines += '\n_%s_ (unknown date)' % ep['title']
                     else:
-                        lines += '\n_%s_ will air in **%s** %s' % (ep[1][1:-1], countdown, notes)
+                        lines += '\n_%s_ will air in **%s** %s' % (ep['title'], countdown, notes)
 
                     postlimit += 1
 
@@ -200,7 +197,7 @@ class Utilities:
                 await self.bot.say('%s: %s' % (author.mention, lines))
 
         except Exception as e:
-            await self.bot.say('%s: I\'m sorry, I can\'t help you with that.' % author.mention)
+            await self.bot.say('%s: I\'m sorry, I can\'t help you with that right now.' % author.mention)
             print('>>> ERROR Countdown ', e)
 
 
