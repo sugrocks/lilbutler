@@ -1,4 +1,5 @@
 import os
+import time
 import random
 import logging
 import asyncio
@@ -129,7 +130,8 @@ async def on_message(message):
             if save_path:
                 for attach in message.attachments:
                     r = requests.get(attach['url'])
-                    with open(save_path + attach['filename'], 'wb') as f:
+                    uniq_id = 5555555555 - int(time.time())
+                    with open(save_path + str(uniq_id) + '_' + attach['filename'], 'wb') as f:
                         for chunk in r.iter_content(chunk_size=1024):
                             if chunk:  # filter out keep-alive new chunks
                                 f.write(chunk)
