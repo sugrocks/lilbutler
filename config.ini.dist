@@ -6,7 +6,10 @@ owner_id =
 ; server id = mute role id
 
 [modlogs]
-; server id = logs channel id
+; server id = join/part/ban logs channel id
+
+[deletelogs]
+; server id = deleted messages logs channel id
 
 [cleantemp]
 ; channel id = true

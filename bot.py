@@ -29,7 +29,7 @@ conf.read('./config.ini')
 
 # Setup discord-stuff
 description = '"You people have too much money!"'
-bot = commands.Bot(command_prefix='~', description=description)
+bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True)
 
 # init
 better_exceptions.MAX_LENGTH = None
@@ -229,6 +229,34 @@ async def on_member_ban(member):
                        colour=0x7289DA, timestamp=datetime.utcnow())  # color: blue
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
+
+    # Send message with embed
+    await bot.send_message(discord.Object(int(chan)), embed=em)
+
+
+# On message delete
+@bot.event
+async def on_message_delete(message):
+    # Notify in defined channel for the server
+    server = message.server
+    author = message.author
+
+    try:
+        chan = conf.get('deletelogs', str(server.id))  # get channel id who gets mod logs
+    except configparser.NoOptionError:
+        return
+
+    if chan is None:
+        return  # If there's nothing, don't do anything
+
+    # Build an embed
+    em = discord.Embed(description=message.content,
+                       colour=0x607D8B, timestamp=message.timestamp)  # color: dark grey
+    em.set_author(name=author.name, icon_url=author.avatar_url)
+    em.set_footer(text='ID: ' + str(message.id))
+
+    if len(message.attachments) > 0:
+        em.set_image(url=message.attachments[0]['url'])
 
     # Send message with embed
     await bot.send_message(discord.Object(int(chan)), embed=em)
