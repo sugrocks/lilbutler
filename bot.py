@@ -246,7 +246,7 @@ async def on_message_delete(message):
     except configparser.NoOptionError:
         return
 
-    if chan is None:
+    if chan is None or author.discriminator == '0000':
         return  # If there's nothing, don't do anything
 
     # Build an embed
