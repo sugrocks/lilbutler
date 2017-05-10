@@ -273,9 +273,13 @@ async def clean_temp():
             chan = bot.get_channel(channel)
 
             async for message in bot.logs_from(chan, limit=100, reverse=True):  # load logs with 100 messages
-                deleted = await bot.purge_from(chan, before=message)  # delete anything above that 100 messages count
-                if len(deleted) > 0:  # log in console that it deleted stuff
-                    print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
+                try:
+                    deleted = await bot.purge_from(chan, before=message)  # delete anything above that 100 messages count
+                    if len(deleted) > 0:  # log in console that it deleted stuff
+                        print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
+                except Exception as e:
+                    print(str(channel) + ' can\'t delete message there, HTTP error')
+                    print(str(e))
 
                 break  # we only needed the first message in log, actually
 
