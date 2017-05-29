@@ -92,7 +92,7 @@ class Utilities:
             if sch[param]['source'] == 'Cartoon Network':
                 em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
             else:
-                em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it)', colour=0xACFFAD)  # color: Screener Green
+                em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it', colour=0xACFFAD)  # color: Screener Green
 
             for slot in sch[param]['schedule'][:20]:
                 # We can't have more than 25 fields, let's cut at 20 and send the rest in a second message
@@ -105,7 +105,7 @@ class Utilities:
                 if sch[param]['source'] == 'Cartoon Network':
                     em = discord.Embed(title='Schedule for ' + param + ' (part 2)', colour=0xEC018C)
                 else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 2)', colour=0xACFFAD)
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 2)', colour=0xACFFAD)
 
                 for slot in sch[param]['schedule'][20:40]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
@@ -117,7 +117,7 @@ class Utilities:
                 if sch[param]['source'] == 'Cartoon Network':
                     em = discord.Embed(title='Schedule for ' + param + ' (part 3)', colour=0xEC018C)
                 else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 3)', colour=0xACFFAD)
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 3)', colour=0xACFFAD)
 
                 for slot in sch[param]['schedule'][40:60]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
@@ -129,7 +129,7 @@ class Utilities:
                 if sch[param]['source'] == 'Cartoon Network':
                     em = discord.Embed(title='Schedule for ' + param + ' (part 4)', colour=0xEC018C)
                 else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Screener (Zap2it) (part 4)', colour=0xACFFAD)
+                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 4)', colour=0xACFFAD)
 
                 for slot in sch[param]['schedule'][60:]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
@@ -178,7 +178,7 @@ class Utilities:
                         countdown += str(td.minutes) + " minutes"
 
                     if ep['leaked']:
-                        notes = '(but already leaked)'
+                        notes = '(but already online)'
                     elif ep['supposed']:
                         notes = '(supposed)'
                     else:
