@@ -54,7 +54,10 @@ async def on_ready():
     bot.load_extension('utilities')
     bot.load_extension('mod')
     for server in bot.servers:
-        invites[server.id] = await bot.invites_from(server)
+        try:
+            invites[server.id] = await bot.invites_from(server)
+        except:
+            pass
 
 
 # On new messages
