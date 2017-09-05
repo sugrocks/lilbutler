@@ -1,0 +1,78 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Mod	../mod.py	/^class Mod:$/;"	kind:class	line:7
+Utilities	../utilities.py	/^class Utilities:$/;"	kind:class	line:14
+__init__	../mod.py	/^    def __init__(self, bot):$/;"	kind:member	line:9
+__init__	../utilities.py	/^    def __init__(self, bot):$/;"	kind:member	line:16
+asyncio	../bot.py	/^import asyncio$/;"	kind:namespace	line:5
+banlist	../bot.py	/^banlist = []$/;"	kind:variable	line:39
+better_exceptions	../bot.py	/^import better_exceptions$/;"	kind:namespace	line:10
+bot	../bot.py	/^bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True)$/;"	kind:variable	line:32
+bot.py	../bot.py	1;"	kind:file	line:1
+botutils.py	../botutils.py	1;"	kind:file	line:1
+bumps	../utilities.py	/^    async def bumps(self, ctx):$/;"	kind:member	line:46
+cd_json	../utilities.py	/^cd_json = 'https:\/\/sug.rocks\/countdown\/episodes.json'$/;"	kind:variable	line:11
+clean	../mod.py	/^    async def clean(self, ctx):$/;"	kind:member	line:29
+clean_temp	../bot.py	/^async def clean_temp():$/;"	kind:function	line:265
+cn	../utilities.py	/^    async def cn(self, ctx, *, param: str=None):$/;"	kind:member	line:73
+commands	../bot.py	/^from discord.ext import commands$/;"	kind:namespace	line:16
+commands	../mod.py	/^from discord.ext import commands$/;"	kind:namespace	line:3
+commands	../utilities.py	/^from discord.ext import commands$/;"	kind:namespace	line:7
+conf	../bot.py	/^conf = configparser.ConfigParser()$/;"	kind:variable	line:27
+configparser	../bot.py	/^import configparser$/;"	kind:namespace	line:9
+configparser	../mod.py	/^import configparser$/;"	kind:namespace	line:1
+copyfile	../bot.py	/^from shutil import copyfile$/;"	kind:namespace	line:12
+countdown	../utilities.py	/^    async def countdown(self, ctx):$/;"	kind:member	line:146
+cur	../bot.py	/^            cur = db.cursor()$/;"	kind:variable	line:299
+data	../bot.py	/^            data = cur.fetchone()$/;"	kind:variable	line:301
+datetime	../bot.py	/^from datetime import datetime$/;"	kind:namespace	line:14
+datetime	../utilities.py	/^from datetime import datetime, timezone$/;"	kind:namespace	line:8
+db	../bot.py	/^        db = sqlite3.connect('lilbutler.db')$/;"	kind:variable	line:297
+db	../bot.py	/^db = None$/;"	kind:variable	line:37
+del_message	../botutils.py	/^async def del_message(self, ctx):$/;"	kind:function	line:10
+del_message	../mod.py	/^from botutils import del_message, is_mod$/;"	kind:namespace	line:4
+del_message	../utilities.py	/^from botutils import del_message$/;"	kind:namespace	line:6
+description	../bot.py	/^description = '"You people have too much money!"'$/;"	kind:variable	line:31
+discord	../bot.py	/^import discord$/;"	kind:namespace	line:6
+discord	../utilities.py	/^import discord$/;"	kind:namespace	line:3
+dutils	../bot.py	/^from discord import utils as dutils$/;"	kind:namespace	line:15
+handler	../bot.py	/^handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')$/;"	kind:variable	line:22
+howlong	../utilities.py	/^    async def howlong(self, ctx, *, user: discord.Member=None):$/;"	kind:member	line:33
+is_admin	../botutils.py	/^def is_admin(message):$/;"	kind:function	line:2
+is_me	../mod.py	/^    def is_me(self, message):$/;"	kind:member	line:15
+is_mod	../bot.py	/^from botutils import is_mod$/;"	kind:namespace	line:13
+is_mod	../botutils.py	/^def is_mod(message):$/;"	kind:function	line:6
+is_mod	../mod.py	/^from botutils import del_message, is_mod$/;"	kind:namespace	line:4
+last_bumper	../bot.py	/^last_bumper = None$/;"	kind:variable	line:36
+logger	../bot.py	/^logger = logging.getLogger('discord')$/;"	kind:variable	line:20
+logging	../bot.py	/^import logging$/;"	kind:namespace	line:4
+mod.py	../mod.py	1;"	kind:file	line:1
+nuke	../mod.py	/^    async def nuke(self, ctx, nbr: int = 50):$/;"	kind:member	line:45
+on_member_ban	../bot.py	/^async def on_member_ban(member):$/;"	kind:function	line:215
+on_member_join	../bot.py	/^async def on_member_join(member):$/;"	kind:function	line:145
+on_member_remove	../bot.py	/^async def on_member_remove(member):$/;"	kind:function	line:186
+on_message	../bot.py	/^async def on_message(message):$/;"	kind:function	line:60
+on_message_delete	../bot.py	/^async def on_message_delete(message):$/;"	kind:function	line:239
+on_ready	../bot.py	/^async def on_ready():$/;"	kind:function	line:44
+os	../bot.py	/^import os$/;"	kind:namespace	line:1
+pick	../utilities.py	/^    async def pick(self, ctx, *, choices: str):$/;"	kind:member	line:21
+ping	../utilities.py	/^    async def ping(self, ctx):$/;"	kind:member	line:60
+random	../bot.py	/^import random$/;"	kind:namespace	line:3
+random	../utilities.py	/^import random$/;"	kind:namespace	line:1
+relativedelta	../bot.py	/^from dateutil.relativedelta import relativedelta$/;"	kind:namespace	line:17
+relativedelta	../utilities.py	/^from dateutil.relativedelta import relativedelta$/;"	kind:namespace	line:9
+requests	../bot.py	/^import requests$/;"	kind:namespace	line:8
+requests	../utilities.py	/^import requests$/;"	kind:namespace	line:4
+server_bump_wait	../bot.py	/^server_bump_wait = {}$/;"	kind:variable	line:38
+setup	../mod.py	/^def setup(bot):$/;"	kind:function	line:61
+setup	../utilities.py	/^def setup(bot):$/;"	kind:function	line:204
+sleep	../mod.py	/^    async def sleep(self, ctx):$/;"	kind:member	line:19
+sqlite3	../bot.py	/^import sqlite3$/;"	kind:namespace	line:7
+sqlite3	../utilities.py	/^import sqlite3$/;"	kind:namespace	line:2
+time	../bot.py	/^import time$/;"	kind:namespace	line:2
+timezone	../utilities.py	/^from datetime import datetime, timezone$/;"	kind:namespace	line:8
+utilities.py	../utilities.py	1;"	kind:file	line:1

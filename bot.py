@@ -9,6 +9,7 @@ import requests
 import configparser
 import better_exceptions
 
+from dbans import DBans
 from shutil import copyfile
 from botutils import is_mod
 from datetime import datetime
@@ -31,12 +32,16 @@ conf.read('./config.ini')
 description = '"You people have too much money!"'
 bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True)
 
+# Setup ban lookup
+dBans = DBans(token=conf.get('bot', 'dbans'))
+
 # init
 better_exceptions.MAX_LENGTH = None
 last_bumper = None
 db = None
 server_bump_wait = {}
 banlist = []
+invites = {}
 
 
 # On bot login
@@ -48,11 +53,8 @@ async def on_ready():
     # Import our 'modules'
     bot.load_extension('utilities')
     bot.load_extension('mod')
-    # Load banlist
-    banreq = requests.get('https://bans.discordlist.net/api')
-    for i in banreq.json():
-        banlist.append(str(i[0]).strip())
-    print('banlist loaded')
+    for server in bot.servers:
+        invites[server.id] = await bot.invites_from(server)
 
 
 # On new messages
@@ -147,13 +149,13 @@ async def on_member_join(member):
     muted = False
 
     # Check if the user is in a ban list
-    if str(member.id) in banlist:
+    if dBans.lookup(id=str(member.id)) == "True":
         # mute him if the server can do it
         try:
-            muteid = conf.get('autoban', str(server.id))  # get channel id who gets mod logs
+            muted = True
+            muteid = conf.get('automute', str(server.id))  # get channel id who gets mod logs
             role = dutils.get(server.roles, id=muteid)
             await bot.add_roles(member, role)
-            muted = True
         except:
             raise
             pass
@@ -167,12 +169,31 @@ async def on_member_join(member):
     if chan is None:
         return  # If there's nothing, don't do anything
 
+    invite_code = 'an unknown invite'
+    invite_user = 'someone'
+
+    try:
+        curr_invites = {}
+        sinv = await bot.invites_from(server)
+        for invite in sinv:
+            curr_invites[invite.code] = invite.uses
+
+        for invite in invites[str(server.id)]:
+            if invite.uses != curr_invites[invite.code]:
+                invite_code = invite.code
+                invite_user = '**' + invite.inviter.name + '**#' + invite.inviter.discriminator
+    except:
+        print('ERROR: Checking what invite was used didn\'t work')
+
     # Build an embed
     if muted:
-        em = discord.Embed(title=member.name + ' joined the server [muted]', description='**NOTE**: ' + member.mention + ' is now muted.',
+        em = discord.Embed(title=member.name + ' joined the server [WARNING]',
+                           description='USER IS IN PUBLIC BANLIST. \n' +
+                                       member.mention + ' joined using ' + invite_code + ' (Created by ' + invite_user + ')',
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     else:
-        em = discord.Embed(title=member.name + ' joined the server', description='Say hi to ' + member.mention,
+        em = discord.Embed(title=member.name + ' joined the server',
+                           description=member.mention + ' joined using ' + invite_code + ' (Created by ' + invite_user + ')',
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
@@ -249,14 +270,18 @@ async def on_message_delete(message):
     if chan is None or author.discriminator == '0000':
         return  # If there's nothing, don't do anything
 
+    attch = []
+    for a in message.attachments:
+        attch.append(a['url'])
+
     # Build an embed
-    em = discord.Embed(description=message.content,
+    em = discord.Embed(description=message.content + ' ' + ' '.join(attch),
                        colour=0x607D8B, timestamp=message.timestamp)  # color: dark grey
     em.set_author(name=author.name, icon_url=author.avatar_url)
-    em.set_footer(text='ID: ' + str(message.id))
+    em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
-    if len(message.attachments) > 0:
-        em.set_image(url=message.attachments[0]['url'])
+    if len(attch) > 0:
+        em.set_image(url=attch[0])
 
     # Send message with embed
     await bot.send_message(discord.Object(int(chan)), embed=em)
