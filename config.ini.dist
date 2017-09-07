@@ -2,6 +2,8 @@
 token =
 owner_id =
 dbans =
+;Owner:     Bolt,              Kody,              The Loli Writer,   Katiebug586,       Regi Zteel,        88TF               Ali
+whitelist = 217111753614426112,274151655795064832,310033792406388746,240207527780941824,299982693783961601,240766772028899328,319197369168297986
 
 [automute]
 ; server id = mute role id

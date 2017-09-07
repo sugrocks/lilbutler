@@ -37,6 +37,7 @@ dBans = DBans(token=conf.get('bot', 'dbans'))
 
 # init
 better_exceptions.MAX_LENGTH = None
+whitelisted_servers = conf.get('bot', 'whitelist').split(',')
 last_bumper = None
 db = None
 sqlite_version = '???'
@@ -60,13 +61,16 @@ async def on_ready():
     bot.load_extension('utilities')
     bot.load_extension('mod')
     print('|-----------------------------------------------------------------------------')
-    print('| # SERVERS')
+    print('| # SERVERS (' + str(len(bot.servers)) + ')')
     for server in bot.servers:
         print('| > Name:   ' + server.name)
         print('|   ID:     ' + server.id)
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
             print('|   Nick:   ' + server.me.nick)
+        if server.id not in whitelisted_servers:
+            print('| >>> Server not in whitelist, leaving.')
+            await bot.leave_server(server)
     print('\-----------------------------------------------------------------------------')
 
 
