@@ -12,7 +12,7 @@ import better_exceptions
 from dbans import DBans
 from shutil import copyfile
 from botutils import is_mod
-from datetime import datetime
+from datetime import datetime, timedelta
 from discord import utils as dutils
 from discord.ext import commands
 from dateutil.relativedelta import relativedelta
@@ -78,7 +78,7 @@ async def on_ready():
     print('|-----------------------------------------------------------------------------')
     print('| # SERVERS (' + str(len(bot.servers)) + ')')
     for server in bot.servers:
-        print('| > Name:   ' + server.name + '(' + server.id + ')')
+        print('| > Name:   ' + server.name + ' (' + server.id + ')')
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
             print('|   Nick:   ' + server.me.nick)
@@ -371,8 +371,9 @@ async def clean_temp():
 
         for channel in channels:
             chan = bot.get_channel(channel)
+            limit_date = datetime.now() - timedelta(days=10)
 
-            async for message in bot.logs_from(chan, limit=100, reverse=True):  # load logs with 100 messages
+            async for message in bot.logs_from(chan, limit=100, before=limit_date, reverse=True):  # load logs max: 100 messages, 10 days
                 try:
                     deleted = await bot.purge_from(chan, before=message)  # delete anything above that 100 messages count
                     if len(deleted) > 0:  # log in console that it deleted stuff
