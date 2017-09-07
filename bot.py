@@ -66,7 +66,7 @@ async def on_ready():
 
     print('/-----------------------------------------------------------------------------')
     print('| # ME')
-    print('| Name:     ' + bot.user.name + '!')
+    print('| Name:     ' + bot.user.name)
     print('| ID:       ' + bot.user.id)
     print('| Invite:   https://discord.now.sh/' + bot.user.id + '?p1543892215')
     print('| SQLite:   ' + sqlite_version)
@@ -78,8 +78,7 @@ async def on_ready():
     print('|-----------------------------------------------------------------------------')
     print('| # SERVERS (' + str(len(bot.servers)) + ')')
     for server in bot.servers:
-        print('| > Name:   ' + server.name)
-        print('|   ID:     ' + server.id)
+        print('| > Name:   ' + server.name + '(' + server.id + ')')
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
             print('|   Nick:   ' + server.me.nick)
@@ -147,6 +146,36 @@ async def on_message(message):
                     bump_score = 'Behold. A new **bump master** arrived, with 100 bumps to their score!'
                 elif c == 200:
                     bump_score = 'Dude what. 200 times? That\'s determination.'
+                elif c == 300:
+                    bump_score = 'THIS. IS. SPARTA!'
+                elif c == 301:
+                    bump_score = 'The hell are you doing???'
+                elif c == 302:
+                    bump_score = 'Like, stop.'
+                elif c == 303:
+                    bump_score = 'How did you bump this much?'
+                elif c == 304:
+                    bump_score = 'To get to this number of bumps (304), you waited **AT LEAST** 912 hours, that\'s 38 days.'
+                elif c == 305:
+                    bump_score = 'Welp. 305'
+                elif c == 306:
+                    bump_score = 'And 306...'
+                elif c == 307:
+                    bump_score = '307. You\'re leaving me depressed.'
+                elif c == 308:
+                    bump_score = 'Aaaaaaaand 308.'
+                elif c == 309:
+                    bump_score = 'Here comes 309.'
+                elif c == 310:
+                    bump_score = 'Alright, that\'s 310. Let\'s get more custom messages at 480.'
+                elif c == 480:
+                    bump_score = 'Hello there! Did you know this is your 480th bump? That means your **minimal** wait time is 60 days. ' +\
+                                 'And since I think you didn\'t really bump every three hours, that means you\'ve been here for a ' +\
+                                 'looooooong time. _Please, tell me your secret._'
+                elif c == 500:
+                    bump_score = 'Hey, 500 bumps! Please go see Kody and tell him to give you a random Steam game!'
+                elif c == 1000:
+                    bump_score = 'Ayy 1000 bumps! Please go see Kody and tell him to shut me down (and to give you a steam game).'
                 else:
                     bump_score = 'You bumped this server %s times.' % (str(c))
 
@@ -198,8 +227,8 @@ async def on_member_join(member):
     if chan is None:
         return  # If there's nothing, don't do anything
 
-    invite_code = 'an unknown invite'
-    invite_user = 'someone'
+    invite_code = 'a recently made invite'
+    invite_user = 'someone, please check audit log'
 
     try:
         curr_invites = {}
@@ -212,17 +241,17 @@ async def on_member_join(member):
                 invite_code = invite.code
                 invite_user = '**' + invite.inviter.name + '**#' + invite.inviter.discriminator
     except:
-        print('ERROR: Checking what invite was used didn\'t work')
+        print('ERROR: Can\'t find the invite used for user join')
 
     # Build an embed
     if muted:
-        em = discord.Embed(title=member.name + ' joined the server [WARNING]',
+        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
                            description='USER IS IN PUBLIC BANLIST. \n' +
-                                       member.mention + ' joined using ' + invite_code + ' (Created by ' + invite_user + ')',
+                                       member.mention + ' joined using ' + invite_code + ' (created by ' + invite_user + ').',
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     else:
-        em = discord.Embed(title=member.name + ' joined the server',
-                           description=member.mention + ' joined using ' + invite_code + ' (Created by ' + invite_user + ')',
+        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
+                           description=member.mention + ' joined using ' + invite_code + ' (created by ' + invite_user + ').',
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
