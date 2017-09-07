@@ -371,11 +371,11 @@ async def clean_temp():
 
         for channel in channels:
             chan = bot.get_channel(channel)
-            limit_date = datetime.now() - timedelta(days=10)
+            limit_date = datetime.utcnow() - timedelta(days=7)
 
-            async for message in bot.logs_from(chan, limit=100, before=limit_date, reverse=True):  # load logs max: 100 messages, 10 days
+            async for message in bot.logs_from(chan, before=limit_date, reverse=True):  # load logs older than 7 days
                 try:
-                    deleted = await bot.purge_from(chan, before=message)  # delete anything above that 100 messages count
+                    deleted = await bot.purge_from(chan, before=message)  # delete anything older than 7 days
                     if len(deleted) > 0:  # log in console that it deleted stuff
                         print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
                 except Exception as e:
