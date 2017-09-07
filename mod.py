@@ -7,10 +7,10 @@ from botutils import del_message, is_mod
 class Mod:
     """Commands for mods."""
     def __init__(self, bot):
-        print('extension loaded: mod')
         self.bot = bot
         self.conf = configparser.ConfigParser()
         self.conf.read('./config.ini')
+        print('| Loaded:   mod')
 
     def is_me(self, message):
         return message.author == self.bot.user

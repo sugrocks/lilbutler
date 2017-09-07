@@ -39,6 +39,7 @@ dBans = DBans(token=conf.get('bot', 'dbans'))
 better_exceptions.MAX_LENGTH = None
 last_bumper = None
 db = None
+sqlite_version = '???'
 server_bump_wait = {}
 banlist = []
 invites = {}
@@ -47,17 +48,26 @@ invites = {}
 # On bot login
 @bot.event
 async def on_ready():
-    print('I\'m ' + bot.user.name + '!')
-    print('ID: ' + bot.user.id)
-    print('------------------')
+    print('/-----------------------------------------------------------------------------')
+    print('| # ME')
+    print('| Name:     ' + bot.user.name + '!')
+    print('| ID:       ' + bot.user.id)
+    print('| Invite:   https://discord.now.sh/' + bot.user.id + '?p1543892215')
+    print('| SQLite:   ' + sqlite_version)
+    print('|-----------------------------------------------------------------------------')
+    print('| # MODULES')
     # Import our 'modules'
     bot.load_extension('utilities')
     bot.load_extension('mod')
+    print('|-----------------------------------------------------------------------------')
+    print('| # SERVERS')
     for server in bot.servers:
-        try:
-            invites[server.id] = await bot.invites_from(server)
-        except:
-            pass
+        print('| > Name:   ' + server.name)
+        print('|   ID:     ' + server.id)
+        print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
+        if server.me.nick:
+            print('|   Nick:  ' + server.me.nick)
+    print('\-----------------------------------------------------------------------------')
 
 
 # On new messages
@@ -290,6 +300,19 @@ async def on_message_delete(message):
     await bot.send_message(discord.Object(int(chan)), embed=em)
 
 
+# Update invite list
+async def check_invites():
+    await bot.wait_until_ready()
+    while not bot.is_closed:
+        for server in bot.servers:
+            try:
+                invites[server.id] = await bot.invites_from(server)
+                await asyncio.sleep(10)  # wait 5 seconds before going on
+            except:
+                pass
+
+
+# Delete old messages in temp channel
 async def clean_temp():
     await bot.wait_until_ready()
 
@@ -327,10 +350,11 @@ if __name__ == '__main__':
             cur = db.cursor()
             cur.execute('SELECT SQLITE_VERSION()')
             data = cur.fetchone()
-            print("SQLite version: %s" % data)
+            sqlite_version = data[0]
     except Exception as e:
         print("Error : " + str(e))
         exit(1)
 
     bot.loop.create_task(clean_temp())
+    bot.loop.create_task(check_invites())
     bot.run(conf.get('bot', 'token'))

@@ -14,8 +14,8 @@ cd_json = 'https://sug.rocks/countdown/episodes.json'
 class Utilities:
     """"Useful" commands"""
     def __init__(self, bot):
-        print('extension loaded: utilities')
         self.bot = bot
+        print('| Loaded:   utilities')
 
     @commands.command(pass_context=True, description='Example: "pizza or taco or burger".')
     async def pick(self, ctx, *, choices: str):
