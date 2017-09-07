@@ -66,7 +66,7 @@ async def on_ready():
         print('|   ID:     ' + server.id)
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
-            print('|   Nick:  ' + server.me.nick)
+            print('|   Nick:   ' + server.me.nick)
     print('\-----------------------------------------------------------------------------')
 
 
