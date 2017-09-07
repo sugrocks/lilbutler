@@ -280,7 +280,7 @@ async def on_member_remove(member):
         diff.months, diff.days, diff.hours, diff.minutes, diff.seconds)
 
     # Build an embed
-    em = discord.Embed(title=member.name + ' left the server', description=member_since,
+    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the server', description=member_since,
                        colour=0xE81010, timestamp=datetime.utcnow())  # color: red
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
