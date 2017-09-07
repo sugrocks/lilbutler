@@ -49,6 +49,15 @@ invites = {}
 # On bot login
 @bot.event
 async def on_ready():
+    s = bot.servers
+    for server in s:
+        try:
+            if server.id not in whitelisted_servers:
+                print(server.name + ' (by ' + server.owner.name + '#' + str(server.owner.discriminator) + ') not in whitelist, leaving.')
+                await bot.leave_server(server)
+        except:
+            pass
+
     print('/-----------------------------------------------------------------------------')
     print('| # ME')
     print('| Name:     ' + bot.user.name + '!')
@@ -68,9 +77,6 @@ async def on_ready():
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
             print('|   Nick:   ' + server.me.nick)
-        if server.id not in whitelisted_servers:
-            print('| >>> Server not in whitelist, leaving.')
-            await bot.leave_server(server)
     print('\-----------------------------------------------------------------------------')
 
 
@@ -307,11 +313,16 @@ async def on_message_delete(message):
 # Update invite list
 async def check_invites():
     await bot.wait_until_ready()
+    ic = 0
     while not bot.is_closed:
         for server in bot.servers:
             try:
+                ic += 1
                 invites[server.id] = await bot.invites_from(server)
-                await asyncio.sleep(10)  # wait 5 seconds before going on
+                print('check')
+                if ic > 2:  # check three servers and wait 5 seconds
+                    await asyncio.sleep(5)
+                    ic = 0
             except:
                 pass
 
