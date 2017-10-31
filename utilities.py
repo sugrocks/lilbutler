@@ -8,7 +8,7 @@ from discord.ext import commands
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
-cd_json = 'https://sug.rocks/countdown/episodes.json'
+cd_json = 'http://sug.rocks/countdown/episodes.json'
 
 
 class Utilities:
@@ -181,6 +181,8 @@ class Utilities:
                         notes = '(but already online)'
                     elif ep['supposed']:
                         notes = '(supposed)'
+                    elif ep['app']:
+                        notes = 'on the CN App'
                     else:
                         notes = ''
 
