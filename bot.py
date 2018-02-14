@@ -259,6 +259,14 @@ async def on_member_join(member):
     # Send message with embed
     await bot.send_message(discord.Object(int(chan)), embed=em)
 
+    try:
+        chan = conf.get('spoop', str(server.id))  # get channel id who gets mod logs
+        await bot.send_message(discord.Object(int(chan)), '`userinfo ' + str(member.id))
+    except configparser.NoOptionError:
+        return
+    except:
+        print('cant ask spoopy send help')
+
 
 # On user leave
 @bot.event

@@ -36,8 +36,9 @@ tmux
 ## Config
 - `bot.token`: the discord bot token (needed to login to Discord)
 - `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
-- `modlogs`: list of `<server id> = <channel id>` where join/leave/ban logs are going to be posted
-- `cleantemp`: list of channels to clean after 100 messages. Put whatever you want as value, only the key counts
+- `modlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
+- `spoopy`: list of `<server id> = <channel id>` where we'll ask spoo.py `userinfo` when a user joins
+- `cleantemp`: list of channels to clean after 100 messages or a week. Put whatever you want as value, only the key counts
 
 **Example:**
 ```ini
