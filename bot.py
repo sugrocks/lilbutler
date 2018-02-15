@@ -6,6 +6,7 @@ import asyncio
 import discord
 import sqlite3
 import requests
+import humanize
 import configparser
 import better_exceptions
 
@@ -229,6 +230,7 @@ async def on_member_join(member):
 
     invite_code = 'a recently made invite'
     invite_user = 'someone, please check audit log'
+    user_created = 'someday'
 
     try:
         curr_invites = {}
@@ -243,29 +245,32 @@ async def on_member_join(member):
     except:
         print('ERROR: Can\'t find the invite used for user join')
 
+    try:
+        if member.created_at is not None:
+            user_created = "{} ({} UTC)".format(humanize.naturaltime(member.created_at + (datetime.now() - datetime.utcnow())),
+                                                member.created_at)
+    except:
+        print('ERROR: Can\'t find the creation date for user join')
+
     # Build an embed
     if muted:
         em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
                            description='USER IS IN PUBLIC BANLIST. \n' +
-                                       member.mention + ' joined using ' + invite_code + ' (created by ' + invite_user + ').',
+                           member.mention + ' joined using ' + invite_code +
+                           ' (created by ' + invite_user + ').\n' +
+                           'Account was created ' + user_created,
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     else:
         em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
-                           description=member.mention + ' joined using ' + invite_code + ' (created by ' + invite_user + ').',
+                           description=member.mention + ' joined using ' + invite_code +
+                           ' (created by ' + invite_user + ').\n' +
+                           'Account was created ' + user_created,
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     em.set_thumbnail(url=member.avatar_url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
     await bot.send_message(discord.Object(int(chan)), embed=em)
-
-    try:
-        chan = conf.get('spoop', str(server.id))  # get channel id who gets mod logs
-        await bot.send_message(discord.Object(int(chan)), '`userinfo ' + str(member.id))
-    except configparser.NoOptionError:
-        return
-    except:
-        print('cant ask spoopy send help')
 
 
 # On user leave

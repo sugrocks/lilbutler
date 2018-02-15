@@ -11,9 +11,6 @@ whitelist = 217111753614426112,274151655795064832,310033792406388746,24020752778
 [modlogs]
 ; server id = join/part/ban logs channel id
 
-[spoop]
-; server id = spoopy userinfo on join channel id
-
 [deletelogs]
 ; server id = deleted messages logs channel id
 
