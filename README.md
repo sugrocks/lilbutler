@@ -1,7 +1,8 @@
 # Li'l Butler
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
-[![Gitgud Build Status](https://gitgud.io/sug/lilbutler/badges/master/build.svg)](https://gitgud.io/sug/lilbutler/commits/master)
+[![Gitlab Build Status](https://gitlab.com/ctoon/sug/lilbutler/badges/master/build.svg)](https://gitlab.com/ctoon/sug/lilbutler/commits/master)
 [![Travis Build Status](https://travis-ci.org/sugrocks/lilbutler.svg?branch=master)](https://travis-ci.org/sugrocks/lilbutler)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgitlab.com%2Fctoon%2Fsug%2Flilbutler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgitlab.com%2Fctoon%2Fsug%2Flilbutler?ref=badge_shield)
 
 > _Oh, you're the butler who touches our hearts._  
 > "You people have too much money!"
