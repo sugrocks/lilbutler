@@ -1,3 +1,4 @@
+import discord
 import configparser
 
 from discord.ext import commands
@@ -14,6 +15,45 @@ class Mod:
 
     def is_me(self, message):
         return message.author == self.bot.user
+
+    @commands.command(pass_context=True, description='Toggle the birthday role, if available.')
+    async def birthday(self, ctx, *, user: discord.Member=None, sid: int=0):
+        """Happy Birthday!"""
+        if not is_mod(ctx.message):
+            await self.bot.say('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
+            return
+
+        # Quit if no user mentioned or no id
+        if user is None and sid == 0:
+            await self.bot.say('%s: I need to know who needs to get their roles changed.' % ctx.message.author.mention)
+            return
+
+        # If we don't mention someone, try to use the id instead
+        if user is None:
+            user = self.bot.get_user_info(sid)
+
+        try:
+            await self.bot.send_typing(ctx.message.channel)
+            user_roles = user.roles
+
+            # Remove role (if found in user) and return
+            for r in user.roles:
+                if r.id == self.conf.get('birthday', str(ctx.message.server.id)):
+                    user_roles.remove(r)
+                    await self.bot.replace_roles(user, *user_roles)
+                    await self.bot.say('%s: Removed role.' % ctx.message.author.mention)
+                    return
+
+            # Add role and return
+            for r in user.server.roles:
+                if r.id == self.conf.get('birthday', str(ctx.message.server.id)):
+                    user_roles.append(r)
+                    await self.bot.replace_roles(user, *user_roles)
+                    await self.bot.say('%s: Added role.' % ctx.message.author.mention)
+                    return
+
+        except Exception as e:
+            print('>>> ERROR birthday ', e)
 
     @commands.command(pass_context=True, description='But I might come back!')
     async def sleep(self, ctx):

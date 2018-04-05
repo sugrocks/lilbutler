@@ -388,14 +388,16 @@ async def clean_temp():
 
             async for message in bot.logs_from(chan, before=limit_date, reverse=True):  # load logs older than 7 days
                 try:
-                    deleted = await bot.purge_from(chan, before=message)  # delete anything older than 7 days
-                    if len(deleted) > 0:  # log in console that it deleted stuff
-                        print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
+                    await bot.delete_message(message)
+                    await asyncio.sleep(2)
+                    # deleted = await bot.purge_from(chan, before=message)  # delete anything older than 7 days
+                    # if len(deleted) > 0:  # log in console that it deleted stuff
+                    #     print(str(channel) + ' deleted ' + str(len(deleted)) + ' messages')
                 except Exception as e:
-                    print(str(channel) + ' can\'t delete message there, HTTP error')
+                    print(str(channel) + ' can\'t delete message there')
                     print(str(e))
 
-                break  # we only needed the first message in log, actually
+                # break  # we only needed the first message in log, actually
 
         await asyncio.sleep(60 * 15)  # sleep 15 minutes
 
