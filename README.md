@@ -37,20 +37,21 @@ tmux
 ## Config
 - `bot.token`: the discord bot token (needed to login to Discord)
 - `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
+- `automute`: list of `<server id> = <role id>` where the role id is a mute role, given to people in discord bans
+- `birthday`: list of `<server id> = <role id>` where the role id is a birthday role
 - `modlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
-- `spoopy`: list of `<server id> = <channel id>` where we'll ask spoo.py `userinfo` when a user joins
+- `deletelogs: list of `<server id> = <channel id>` where deleted message are logged
 - `cleantemp`: list of channels to clean after 100 messages or a week. Put whatever you want as value, only the key counts
+- `savepics`: list of `<channel id> = <path>` where pics sent in the channel are saved to a local path
 
-**Example:**
+**Some examples:**
 ```ini
-[bot]
-token = youputhereyourverysecrettokenthatyoushouldnotshare
-owner_id = 81293337012744192
-
 [modlogs]
+; server id        = channel id
 274151655795064832 = 274156905080029196
 
 [cleantemp]
+; channel id
 274153487359672320 = True
 274153638002294784 = sure
 274153443675996160 = whatever
@@ -73,6 +74,8 @@ _(`*` means the user needs the `kick` role in the channel, `^` for owner)_
     + Getting successfully bumps from ServerHound increment your score.
 - `~ping`: PONG!
     + Just to test if you're still there.
+- `*` `~birthday`: Happy Birthday!
+    + Toggle the birthday role, if available.
 - `*` `~clean`: The bot deletes is own messages.
     + In case the bot went crazy...
 - `*` `~nuke <n|50>`: Delete a number of messages. (`n` is optional)

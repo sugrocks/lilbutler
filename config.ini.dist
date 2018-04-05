@@ -8,6 +8,9 @@ whitelist = 217111753614426112,274151655795064832,310033792406388746,24020752778
 [automute]
 ; server id = mute role id
 
+[birthday]
+; server id = birthday role id
+
 [modlogs]
 ; server id = join/part/ban logs channel id
 
