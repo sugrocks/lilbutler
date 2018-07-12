@@ -358,7 +358,7 @@ async def on_message_delete(message):
         em.set_image(url=attch[0])
 
     # Send message with embed
-    await bot.send_message(discord.Object(int(chan)), 'Message deleted',embed=em)
+    await bot.send_message(discord.Object(int(chan)), 'Message deleted', embed=em)
 
 
 # On message edit
