@@ -333,13 +333,16 @@ async def on_message_delete(message):
     server = message.server
     author = message.author
 
+    if server is None or author.discriminator == '0000' or str(message.type) != 'MessageType.default':
+        return  # If there's nothing, don't do anything
+
     try:
         chan = conf.get('msglogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
-    if chan is None or author.discriminator == '0000':
-        return  # If there's nothing, don't do anything
+    if chan is None:
+        return  # Nothing to take care
 
     attch = []
     for a in message.attachments:
@@ -365,16 +368,16 @@ async def on_message_edit(old, message):
     server = message.server
     author = message.author
 
+    if server is None or author.discriminator == '0000' or str(message.type) != 'MessageType.default':
+        return  # If there's nothing, don't do anything
+
     try:
         chan = conf.get('msglogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
-    if chan is None or author.discriminator == '0000':
-        return  # If there's nothing, don't do anything
-
-    if old.content == message.content:
-        return  # No actual changes
+    if chan is None or old.content == message.content:
+        return  # Nothing to take care
 
     attch = []
     for a in message.attachments:

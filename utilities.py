@@ -75,72 +75,78 @@ class Utilities:
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
 
-        schreq = requests.get('https://api.sug.rocks/cnschedule.json')
-        sch = schreq.json()
-        sch.pop('_')
+        lstreq = requests.get('https://api.ctoon.network/schedule/days')
+        lst = lstreq.json()
 
         if param is None:
-            await self.bot.say('%s: Please specify a date (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
+            await self.bot.say('%s: Please specify a date (`~cn YYYY-MM-DD`). ' % author.mention)
             return
 
-        if param not in sch:
-            await self.bot.say('%s: Unknown date given (`~cn YYYY-MM-DD`). Available dates:\n- %s' % (author.mention, '\n- '.join(sch)))
+        if param not in lst:
+            await self.bot.say('%s: Unknown date given (`~cn YYYY-MM-DD`).' % author.mention)
             return
+
+        schreq = requests.get('https://api.ctoon.network/schedule/day/%s' % param)
+        sch = schreq.json()
 
         # Send message with embed
         try:
-            if sch[param]['source'] == 'Cartoon Network':
-                em = discord.Embed(title='Schedule for ' + param, colour=0xEC018C)  # color: CN's pink
+            if sch['cn'] is not None:
+                src = 'cn'
+                src_title = 'Cartoon Network'
+                colour = 0xEC018C  # color: CN's pink
+            elif sch['tvguide'] is not None:
+                src = 'tvguide'
+                src_title = 'TV Guide'
+                colour = 0xACFFAD  # color: Zap2it Green
+            elif sch['zap'] is not None:
+                src = 'zap'
+                src_title = 'Zap2it'
+                colour = 0xACFFAD  # color: Zap2it Green
             else:
-                em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it', colour=0xACFFAD)  # color: Screener Green
+                await self.bot.say('%s: Unknown date given (`~cn YYYY-MM-DD`).' % author.mention)
+                return
 
-            for slot in sch[param]['schedule'][:20]:
+            em = discord.Embed(title='Schedule for ' + sch['date'] + ' (via ' + src_title + ')', colour=colour)
+
+            for slot in sch[src][:20]:
                 # We can't have more than 25 fields, let's cut at 20 and send the rest in a second message
                 em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
             await self.bot.send_message(author, embed=em)
 
             # Send the second part
-            if len(sch[param]['schedule']) > 20:
-                if sch[param]['source'] == 'Cartoon Network':
-                    em = discord.Embed(title='Schedule for ' + param + ' (part 2)', colour=0xEC018C)
-                else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 2)', colour=0xACFFAD)
+            if len(sch[src]) > 20:
+                em = discord.Embed(colour=colour)
 
-                for slot in sch[param]['schedule'][20:40]:
+                for slot in sch[src][20:40]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
                 await self.bot.send_message(author, embed=em)
 
             # And third if needed
-            if len(sch[param]['schedule']) > 40:
-                if sch[param]['source'] == 'Cartoon Network':
-                    em = discord.Embed(title='Schedule for ' + param + ' (part 3)', colour=0xEC018C)
-                else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 3)', colour=0xACFFAD)
+            if len(sch[src]) > 40:
+                em = discord.Embed(colour=colour)
 
-                for slot in sch[param]['schedule'][40:60]:
+                for slot in sch[src][40:60]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
                 await self.bot.send_message(author, embed=em)
 
             # Heck, we never know!
-            if len(sch[param]['schedule']) > 60:
-                if sch[param]['source'] == 'Cartoon Network':
-                    em = discord.Embed(title='Schedule for ' + param + ' (part 4)', colour=0xEC018C)
-                else:
-                    em = discord.Embed(title='Schedule for ' + param + ' - From Zap2it (part 4)', colour=0xACFFAD)
+            if len(sch[src]) > 60:
+                em = discord.Embed(colour=colour)
 
-                for slot in sch[param]['schedule'][60:]:
+                for slot in sch[src][60:]:
                     em.add_field(name=slot['time'], value='**' + slot['show'] + '**\n_' + slot['title'] + '_', inline=False)
 
                 await self.bot.send_message(author, embed=em)
 
-            # It's supposed to not tell the user to check their PMs when already in PM but oh well
+            # It's supposed to not tell the user to check their DMs when already in DM but oh well
             if ctx.message.channel is not None:
-                await self.bot.say('%s: Please check your PMs.' % author.mention)
+                await self.bot.say('%s: Please check your DMs.' % author.mention)
         except discord.errors.Forbidden:
-            await self.bot.say('%s: It looks like you disabled PMs from strangers. I can\'t send the message.' % author.mention)
+            await self.bot.say('%s: It looks like you disabled DMs from strangers. I can\'t send the message.' % author.mention)
 
     @commands.command(pass_context=True, description='Will return a countdown.')
     async def countdown(self, ctx):
