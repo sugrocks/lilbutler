@@ -221,7 +221,7 @@ async def on_member_join(member):
 
     # Notify in defined channel for the server
     try:
-        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+        chan = conf.get('joinlogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
@@ -280,7 +280,7 @@ async def on_member_remove(member):
     server = member.server
 
     try:
-        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+        chan = conf.get('joinlogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
@@ -309,7 +309,7 @@ async def on_member_ban(member):
     server = member.server
 
     try:
-        chan = conf.get('modlogs', str(server.id))  # get channel id who gets mod logs
+        chan = conf.get('joinlogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
@@ -334,7 +334,7 @@ async def on_message_delete(message):
     author = message.author
 
     try:
-        chan = conf.get('deletelogs', str(server.id))  # get channel id who gets mod logs
+        chan = conf.get('msglogs', str(server.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:
         return
 
@@ -355,7 +355,40 @@ async def on_message_delete(message):
         em.set_image(url=attch[0])
 
     # Send message with embed
-    await bot.send_message(discord.Object(int(chan)), embed=em)
+    await bot.send_message(discord.Object(int(chan)), 'Message deleted',embed=em)
+
+
+# On message edit
+@bot.event
+async def on_message_edit(old, message):
+    # Notify in defined channel for the server
+    server = message.server
+    author = message.author
+
+    try:
+        chan = conf.get('msglogs', str(server.id))  # get channel id who gets mod logs
+    except configparser.NoOptionError:
+        return
+
+    if chan is None or author.discriminator == '0000':
+        return  # If there's nothing, don't do anything
+
+    if old.content == message.content:
+        return  # No actual changes
+
+    attch = []
+    for a in message.attachments:
+        attch.append(a['url'])
+
+    # Build an embed
+    em = discord.Embed(colour=0x800080, timestamp=message.timestamp)  # color: purple
+    em.add_field(name='Before', inline=False, value=old.content + ' ' + ' '.join(attch))
+    em.add_field(name='After', inline=False, value=message.content + ' ' + ' '.join(attch))
+    em.set_author(name=author.name, icon_url=author.avatar_url)
+    em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
+
+    # Send message with embed
+    await bot.send_message(discord.Object(int(chan)), 'Message edited', embed=em)
 
 
 # Update invite list

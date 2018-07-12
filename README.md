@@ -4,7 +4,7 @@
 [![Travis Build Status](https://travis-ci.org/sugrocks/lilbutler.svg?branch=master)](https://travis-ci.org/sugrocks/lilbutler)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgitlab.com%2Fctoon%2Fsug%2Flilbutler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgitlab.com%2Fctoon%2Fsug%2Flilbutler?ref=badge_shield)
 
-> _Oh, you're the butler who touches our hearts._  
+> _Oh, you're the butler who touches our hearts._
 > "You people have too much money!"
 
 Just a discord bot. It has some commands and it deletes links to other servers.
@@ -12,7 +12,6 @@ Just a discord bot. It has some commands and it deletes links to other servers.
 
 ## Requirements
 - Python 3.6
-    + [pipenv](https://github.com/kennethreitz/pipenv)
 - A Discord bot created. Head over there: https://discordapp.com/developers/applications/me
     + Create an app
     + Then convert it to a bot account
@@ -26,29 +25,40 @@ Just a discord bot. It has some commands and it deletes links to other servers.
 ## Install
 
 ```bash
-pipenv install --python $(which python3.6)
+pip install -r requirements.txt -U
 cp config.ini.dist config.ini
 nano config.ini  # see Config below
-tmux
-    pipenv run python bot.py
+python bot.py
 ```
 
 
 ## Config
 - `bot.token`: the discord bot token (needed to login to Discord)
 - `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
+- `bot.dbans`: DiscordBans api token
+- `bot.whitelist` list of ids (delemited by a comma without spaces) of servers the bot can be in
 - `automute`: list of `<server id> = <role id>` where the role id is a mute role, given to people in discord bans
 - `birthday`: list of `<server id> = <role id>` where the role id is a birthday role
-- `modlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
-- `deletelogs: list of `<server id> = <channel id>` where deleted message are logged
+- `joinlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
+- `msglogs: list of `<server id> = <channel id>` where deleted message are logged
 - `cleantemp`: list of channels to clean after 100 messages or a week. Put whatever you want as value, only the key counts
 - `savepics`: list of `<channel id> = <path>` where pics sent in the channel are saved to a local path
 
 **Some examples:**
 ```ini
-[modlogs]
-; server id        = channel id
-274151655795064832 = 274156905080029196
+[bot]
+token = woa_there
+owner_id = 81293337012744192
+dbans = aGoodToken
+whitelist = 274151655795064832,199198145811447808
+
+[joinlogs]
+; server id = join/part/ban logs channel id
+199198145811447808 = 428171700132118538
+
+[msglogs]
+; server id = deleted/edit messages logs channel id
+199198145811447808 = 428171700132118538
 
 [cleantemp]
 ; channel id

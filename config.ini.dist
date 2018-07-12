@@ -11,11 +11,11 @@ whitelist = 217111753614426112,274151655795064832,310033792406388746,24020752778
 [birthday]
 ; server id = birthday role id
 
-[modlogs]
+[joinlogs]
 ; server id = join/part/ban logs channel id
 
-[deletelogs]
-; server id = deleted messages logs channel id
+[msglogs]
+; server id = deleted/edit messages logs channel id
 
 [cleantemp]
 ; channel id = true
