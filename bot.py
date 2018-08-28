@@ -1,8 +1,10 @@
 import os
 import time
+import json
 import random
 import logging
 import asyncio
+import aiohttp
 import discord
 import sqlite3
 import requests
@@ -10,7 +12,6 @@ import humanize
 import configparser
 import better_exceptions
 
-from dbans import DBans
 from shutil import copyfile
 from botutils import is_mod
 from datetime import datetime, timedelta
@@ -33,9 +34,6 @@ conf.read('./config.ini')
 description = '"You people have too much money!"'
 bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True)
 
-# Setup ban lookup
-dBans = DBans(token=conf.get('bot', 'dbans'))
-
 # init
 better_exceptions.MAX_LENGTH = None
 whitelisted_servers = conf.get('bot', 'whitelist').split(',')
@@ -45,6 +43,25 @@ sqlite_version = '???'
 server_bump_wait = {}
 banlist = []
 invites = {}
+
+
+# dbans
+async def checkBan(userid):
+    headers = {'Authorization': conf.get('bot', 'dbans')}
+    url = 'https://bans.discord.id/api/check.php?user_id=' + userid
+
+    async with aiohttp.ClientSession() as session:
+        resp = await session.get(url, headers=headers)
+        final = await resp.text()
+        resp.close()
+
+    data = json.loads(final)
+    result = []
+    for s in data:
+        if s['banned'] == '1':
+            result.append({'id': s['case_id'], 'reason': s['reason'], 'proof': s['proof']})
+
+    return result
 
 
 # On bot login
@@ -208,16 +225,16 @@ async def on_member_join(member):
     muted = False
 
     # Check if the user is in a ban list
-    if dBans.lookup(id=str(member.id)) == "True":
-        # mute him if the server can do it
-        try:
+    try:
+        check = checkBan(str(member.id))
+        if len(check) > 0:
+            # mute him if the server can do it
             muted = True
             muteid = conf.get('automute', str(server.id))  # get channel id who gets mod logs
             role = dutils.get(server.roles, id=muteid)
             await bot.add_roles(member, role)
-        except:
-            raise
-            pass
+    except:
+        pass
 
     # Notify in defined channel for the server
     try:
