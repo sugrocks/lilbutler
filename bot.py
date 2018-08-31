@@ -473,6 +473,9 @@ if __name__ == '__main__':
         print("Error : " + str(e))
         exit(1)
 
-    bot.loop.create_task(clean_temp())
-    bot.loop.create_task(check_invites())
-    bot.run(conf.get('bot', 'token'))
+    try:
+        bot.loop.create_task(clean_temp())
+        bot.loop.create_task(check_invites())
+        bot.run(conf.get('bot', 'token'))
+    except:
+        exit(5)
