@@ -222,17 +222,28 @@ async def on_message(message):
 @bot.event
 async def on_member_join(member):
     server = member.server
+    autoban = False
     muted = False
+
+    # Check if it's not just an ad
+    try:
+        banned_names = ['discord.gg', 'free games', 'discord.io', 'invite.gg']
+        if any(x in member.name for x in banned_names):
+            await bot.ban(member, 7)
+            autoban = True
+    except:
+        pass
 
     # Check if the user is in a ban list
     try:
-        check = checkBan(str(member.id))
-        if len(check) > 0:
-            # mute him if the server can do it
-            muted = True
-            muteid = conf.get('automute', str(server.id))  # get channel id who gets mod logs
-            role = dutils.get(server.roles, id=muteid)
-            await bot.add_roles(member, role)
+        if not autoban:
+            check = checkBan(str(member.id))
+            if len(check) > 0:
+                # mute him if the server can do it
+                muted = True
+                muteid = conf.get('automute', str(server.id))  # get channel id who gets mod logs
+                role = dutils.get(server.roles, id=muteid)
+                await bot.add_roles(member, role)
     except:
         pass
 
@@ -270,7 +281,14 @@ async def on_member_join(member):
         print('ERROR: Can\'t find the creation date for user join')
 
     # Build an embed
-    if muted:
+    if autoban:
+        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
+                           description='USER WILL BE BANNED AUTOMATICALLY. \n' +
+                           member.mention + ' joined using ' + invite_code +
+                           ' (created by ' + invite_user + ').\n' +
+                           'Account was created ' + user_created,
+                           colour=0x23D160, timestamp=datetime.utcnow())  # color: green
+    elif muted:
         em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
                            description='USER IS IN PUBLIC BANLIST. \n' +
                            member.mention + ' joined using ' + invite_code +
