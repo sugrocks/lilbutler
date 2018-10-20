@@ -43,6 +43,8 @@ sqlite_version = '???'
 server_bump_wait = {}
 banlist = []
 invites = {}
+banned_names = ['discord.gg', 'free games', 'discord.io', 'invite.gg', 'twitch.tv', 'twitter.com']
+delete_content = []
 
 
 # dbans
@@ -113,6 +115,13 @@ async def on_message(message):
     if any(thing in message.content for thing in blacklist) and not is_mod(message):
         await bot.delete_message(message)
         return
+
+    # Remove messages if they're in the delete queue
+    for w in delete_content:
+        if w in message.content:
+            await bot.delete_message(message)
+            delete_content.remove(w)
+            return
 
     if message.content.startswith('=bump'):
         last_bumper = message.author
@@ -227,8 +236,8 @@ async def on_member_join(member):
 
     # Check if it's not just an ad
     try:
-        banned_names = ['discord.gg', 'free games', 'discord.io', 'invite.gg']
         if any(x in member.name for x in banned_names):
+            delete_content.append(member.id)
             await bot.ban(member, 7)
             autoban = True
     except:
