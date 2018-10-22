@@ -43,7 +43,7 @@ sqlite_version = '???'
 server_bump_wait = {}
 banlist = []
 invites = {}
-banned_names = ['discord.gg', 'free games', 'discord.io', 'invite.gg', 'twitch.tv', 'twitter.com']
+banned_names = ['discord.gg', 'free games', 'discord.io', 'discord.me', 'invite.gg', 'twitch.tv', 'twitter.com']
 delete_content = []
 
 
@@ -245,7 +245,7 @@ async def on_member_join(member):
 
     # Check if the user is in a ban list
     try:
-        if not autoban:
+        if False:  # not autoban:  DISABLING THIS FOR NOW
             check = checkBan(str(member.id))
             if len(check) > 0:
                 # mute him if the server can do it
