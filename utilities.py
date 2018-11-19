@@ -168,10 +168,17 @@ class Utilities:
 
                     td = relativedelta(then, now)
 
+                    countdown = ''
+
+                    if td.months == 1:
+                        countdown += "a month, "
+                    elif td.months > 0:
+                        countdown += str(td.months) + " months, "
+
                     if td.days == 1:
-                        countdown = "a day, "
-                    else:
-                        countdown = str(td.days) + " days, "
+                        countdown += "a day, "
+                    elif td.days > 0:
+                        countdown += str(td.days) + " days, "
 
                     if td.hours == 1:
                         countdown += "1 hour and "
