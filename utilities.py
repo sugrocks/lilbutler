@@ -30,7 +30,7 @@ class Utilities:
         await self.bot.say('%s: %s' % (author.mention, random.choice(options)))
 
     @commands.command(pass_context=True, description='Add a name/mention as a parameter to know for someone else.')
-    async def howlong(self, ctx, *, user: discord.Member=None):
+    async def howlong(self, ctx, *, user: discord.Member = None):
         """Ask when someone joined the server."""
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)
@@ -70,7 +70,7 @@ class Utilities:
             print('>>> ERROR Ping ', e)
 
     @commands.command(pass_context=True, description='Ask using the date in this format: YYYY-MM-DD')
-    async def cn(self, ctx, *, param: str=None):
+    async def cn(self, ctx, *, param: str = None):
         """Get Cartoon Network's schedule"""
         author = ctx.message.author
         await self.bot.send_typing(ctx.message.channel)

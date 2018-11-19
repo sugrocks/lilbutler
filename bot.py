@@ -102,7 +102,7 @@ async def on_ready():
         print('|   Owner:  ' + server.owner.name + '#' + str(server.owner.discriminator))
         if server.me.nick:
             print('|   Nick:   ' + server.me.nick)
-    print('\-----------------------------------------------------------------------------')
+    print('\\-----------------------------------------------------------------------------')
 
 
 # On new messages

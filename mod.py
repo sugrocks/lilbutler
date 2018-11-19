@@ -17,7 +17,7 @@ class Mod:
         return message.author == self.bot.user
 
     @commands.command(pass_context=True, description='Toggle the birthday role, if available.')
-    async def birthday(self, ctx, *, user: discord.Member=None, sid: int=0):
+    async def birthday(self, ctx, *, user: discord.Member = None, sid: int = 0):
         """Happy Birthday!"""
         if not is_mod(ctx.message):
             await self.bot.say('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
