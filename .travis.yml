@@ -1,4 +1,8 @@
-language: python
+dist: trusty
+sudo: required
+addons:
+  sonarcloud:
+    organization: "sugrocks"
 python:
     - "3.5"
 install:
