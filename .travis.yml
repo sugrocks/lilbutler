@@ -6,6 +6,6 @@ addons:
 python:
     - "3.5"
 install:
-    - pip3 install flake8
+    - pip install flake8
 script:
     - flake8 .
