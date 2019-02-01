@@ -115,33 +115,48 @@ class Minesweeper:
         If you don't set a number of bombs, it will pick randomly between `size` and `size * 2`.
         """
         try:
-            await self.bot.send_typing(ctx.message.channel)
-            start = (
-                random.randint(1, size + 1),
-                random.randint(1, size + 1)
-            )
+            if size < 0:
+                await self.bot.say('Sorry %s, but the grid has to be a positive number.' % ctx.message.author.mention)
+            if size > 14:
+                await self.bot.say('Sorry %s, but max size is 14.' % ctx.message.author.mention)
+            elif size == 0:
+                await self.bot.say('I can\'t make a grid without any cells, %s!' % ctx.message.author.mention)
+            elif size == 1:
+                if random.randint(0, 1) == 1:
+                    out = '\n||:bomb:||'
+                else:
+                    out = '\n||:clap:||'
 
-            if bombs == 0:
-                bombs = random.randint(size - 1, size * 2 + 1)
+                await self.bot.say('Here\'s your coin toss, %s! %s' % (ctx.message.author.mention, out))
+            else:
+                await self.bot.send_typing(ctx.message.channel)
+                start = (
+                    random.randint(1, size + 1),
+                    random.randint(1, size + 1)
+                )
 
-            grid = self.setupgrid(size, start, bombs)
-            out = ''
+                if bombs == 0:
+                    bombs = random.randint(size - 1, size * 2 - 1)
 
-            for line in grid:
-                out += '\n' + ''.join(line)
+                grid = self.setupgrid(size, start, bombs)
 
-            out = (out.replace('X', '||:bomb:||')
-                      .replace('0', '||:zero:||')
-                      .replace('1', '||:one:||')
-                      .replace('2', '||:two:||')
-                      .replace('3', '||:three:||')
-                      .replace('4', '||:four:||')
-                      .replace('5', '||:five:||')
-                      .replace('6', '||:six:||')
-                      .replace('7', '||:seven:||')
-                      .replace('8', '||:height:||'))
+                out = ''
+                for line in grid:
+                    out += '\n' + ''.join(line)
 
-            await self.bot.say('Here\'s your grid %s! %s' % (ctx.message.author.mention, out))
+                out = (out.replace('X', '||:bomb:||')
+                          .replace('0', '||:zero:||')
+                          .replace('1', '||:one:||')
+                          .replace('2', '||:two:||')
+                          .replace('3', '||:three:||')
+                          .replace('4', '||:four:||')
+                          .replace('5', '||:five:||')
+                          .replace('6', '||:six:||')
+                          .replace('7', '||:seven:||')
+                          .replace('8', '||:height:||'))
+
+                await self.bot.say('Here\'s your grid, %s! %s' % (ctx.message.author.mention, out))
+
             await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR minesweeper ', e)
