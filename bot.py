@@ -95,6 +95,7 @@ async def on_ready():
     # Import our 'modules'
     bot.load_extension('utilities')
     bot.load_extension('mod')
+    bot.load_extension('minesweeper')
     print('|-----------------------------------------------------------------------------')
     print('| # SERVERS (' + str(len(bot.servers)) + ')')
     for server in bot.servers:
