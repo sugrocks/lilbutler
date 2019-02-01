@@ -122,7 +122,7 @@ class Minesweeper:
             )
 
             if bombs == 0:
-                bombs = random.randint(size, size * 2 + 1)
+                bombs = random.randint(size - 1, size * 2 + 1)
 
             grid = self.setupgrid(size, start, bombs)
             out = ''
