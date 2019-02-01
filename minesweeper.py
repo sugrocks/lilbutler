@@ -117,8 +117,8 @@ class Minesweeper:
         try:
             if size < 0:
                 await self.bot.say('Sorry %s, but the grid has to be a positive number.' % ctx.message.author.mention)
-            if size > 14:
-                await self.bot.say('Sorry %s, but max size is 14.' % ctx.message.author.mention)
+            if size > 13:
+                await self.bot.say('Sorry %s, but max size is 13.' % ctx.message.author.mention)
             elif size == 0:
                 await self.bot.say('I can\'t make a grid without any cells, %s!' % ctx.message.author.mention)
             elif size == 1:
@@ -164,7 +164,7 @@ class Minesweeper:
                           .replace('7', '||:seven:||')
                           .replace('8', '||:height:||'))
 
-                await self.bot.say('Here\'s your grid, %s! %s' % (ctx.message.author.mention, out))
+                await self.bot.say('%s - %dx%d - %dx:bomb: %s' % (ctx.message.author.mention, size, size, mines, out))
                 await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR minesweeper ', e)
