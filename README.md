@@ -35,7 +35,6 @@ python bot.py
 ## Config
 - `bot.token`: the discord bot token (needed to login to Discord)
 - `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
-- `bot.dbans`: DiscordBans api token
 - `bot.whitelist` list of ids (delemited by a comma without spaces) of servers the bot can be in
 - `automute`: list of `<server id> = <role id>` where the role id is a mute role, given to people in discord bans
 - `birthday`: list of `<server id> = <role id>` where the role id is a birthday role
@@ -49,7 +48,6 @@ python bot.py
 [bot]
 token = woa_there
 owner_id = 81293337012744192
-dbans = aGoodToken
 whitelist = 274151655795064832,199198145811447808
 
 [joinlogs]

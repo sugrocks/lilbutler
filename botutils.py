@@ -8,5 +8,5 @@ def is_mod(message):
 
 
 async def del_message(self, ctx):
-    if ctx.message.server:
-        await self.bot.delete_message(ctx.message)
+    if ctx.guild:
+        await ctx.message.delete()

@@ -7,7 +7,7 @@ from botutils import del_message
 from string import ascii_lowercase
 
 
-class Minesweeper:
+class Minesweeper(commands.Cog):
     """Minesweeper generator with spoilers!"""
 
     def __init__(self, bot):
@@ -108,7 +108,7 @@ class Minesweeper:
                 if currgrid[r][c] != 'F':
                     self.showcells(grid, currgrid, r, c)
 
-    @commands.command(pass_context=True, description='Create a grid')
+    @commands.command(description='Create a grid')
     async def minesweeper(self, ctx, size: int = 9, mines: int = 0):
         """
         Don't blow up!
@@ -116,30 +116,30 @@ class Minesweeper:
         """
         try:
             if size < 0:
-                await self.bot.say('Sorry %s, but the grid has to be a positive number.' % ctx.message.author.mention)
+                await ctx.send('Sorry %s, but the grid has to be a positive number.' % ctx.message.author.mention)
             if size > 13:
-                await self.bot.say('Sorry %s, but max size is 13.' % ctx.message.author.mention)
+                await ctx.send('Sorry %s, but max size is 13.' % ctx.message.author.mention)
             elif size == 0:
-                await self.bot.say('I can\'t make a grid without any cells, %s!' % ctx.message.author.mention)
+                await ctx.send('I can\'t make a grid without any cells, %s!' % ctx.message.author.mention)
             elif size == 1:
                 if random.randint(0, 1) == 1:
                     out = '\n||:bomb:||'
                 else:
                     out = '\n||:clap:||'
 
-                await self.bot.say('Here\'s your coin toss, %s! %s' % (ctx.message.author.mention, out))
+                await ctx.send('Here\'s your coin toss, %s! %s' % (ctx.message.author.mention, out))
                 await del_message(self, ctx)
             else:
-                await self.bot.send_typing(ctx.message.channel)
+                # await self.bot.send_typing(ctx.message.channel)
 
                 if mines == 0:
                     mines = random.randint(size - 1, size * 2 - 1)
 
                 if mines < 1:
-                    await self.bot.say('Sorry %s, but I need at least one mine.' % ctx.message.author.mention)
+                    await ctx.send('Sorry %s, but I need at least one mine.' % ctx.message.author.mention)
                     return
                 elif mines > 80:
-                    await self.bot.say('Sorry %s, but over 80 mines is too much.' % ctx.message.author.mention)
+                    await ctx.send('Sorry %s, but over 80 mines is too much.' % ctx.message.author.mention)
                     return
 
                 start = (
@@ -164,7 +164,7 @@ class Minesweeper:
                           .replace('7', '||:seven:||')
                           .replace('8', '||:height:||'))
 
-                await self.bot.say('%s - %dx%d - %dx:bomb: %s' % (ctx.message.author.mention, size, size, mines, out))
+                await ctx.send('%s - %dx%d - %dx:bomb: %s' % (ctx.message.author.mention, size, size, mines, out))
                 await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR minesweeper ', e)

@@ -13,8 +13,8 @@ bot = commands.Bot(command_prefix='!!!!!', description=description)
 # On bot login
 @bot.event
 async def on_ready():
-    for server in bot.servers:
-        roles = server.roles
+    for guild in bot.guilds:
+        roles = guild.roles
         clist = []
 
         for r in roles:
@@ -32,11 +32,11 @@ async def on_ready():
         slist = sorted(clist, key=lambda x: x['id'], reverse=True)
 
         # Print list
-        print('\n\n=== %s ===' % server.name)
+        print('\n\n=== %s ===' % guild.name)
 
-        for l in slist:
+        for rl in slist:
             print('%s (%s) - #%02x%02x%02x' %
-                  (l['name'], l['snowflake'], l['r'], l['g'], l['b']))
+                  (rl['name'], rl['snowflake'], rl['r'], rl['g'], rl['b']))
 
 
 # Launch
