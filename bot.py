@@ -27,8 +27,10 @@ conf = configparser.ConfigParser()
 conf.read('./config.ini')
 
 # Setup discord-stuff
+intents = discord.Intents.default()
+intents.members = True
 description = '"You people have too much money!"'
-bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True)
+bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True, intents=intents)
 
 # init
 better_exceptions.MAX_LENGTH = None
@@ -47,7 +49,7 @@ async def on_ready():
     for guild in s:
         try:
             if str(guild.id) not in whitelisted_guilds:
-                print(guild.name + ' (by ' + guild.owner.name + '#' + str(guild.owner.discriminator) + ') not in whitelist, leaving.')
+                print(guild.name + ' not in whitelist, leaving.')
                 exitme = True
                 await guild.leave()
         except:
@@ -73,7 +75,6 @@ async def on_ready():
     print('| # SERVERS (' + str(len(bot.guilds)) + ')')
     for guild in bot.guilds:
         print('| > Name:   ' + guild.name + ' (' + str(guild.id) + ')')
-        print('|   Owner:  ' + guild.owner.name + '#' + str(guild.owner.discriminator))
         if guild.me.nick:
             print('|   Nick:   ' + guild.me.nick)
     print('\\-----------------------------------------------------------------------------')
@@ -96,7 +97,7 @@ async def on_message(message):
             save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
             if save_path:
                 for attach in message.attachments:
-                    r = requests.get(attach['url'])
+                    r = requests.get(attach.url)
                     uniq_id = 5555555555 - int(time.time())
                     with open(save_path + str(uniq_id) + '_' + attach['filename'], 'wb') as f:
                         for chunk in r.iter_content(chunk_size=1024):
@@ -248,7 +249,7 @@ async def on_message_delete(message):
 
     attch = []
     for a in message.attachments:
-        attch.append(a['url'])
+        attch.append(a.url)
 
     # Build an embed
     em = discord.Embed(description=message.content + ' ' + ' '.join(attch),
@@ -283,7 +284,7 @@ async def on_message_edit(old, message):
 
     attch = []
     for a in message.attachments:
-        attch.append(a['url'])
+        attch.append(a.url)
 
     # Build an embed
     em = discord.Embed(colour=0x800080, timestamp=message.created_at)  # color: purple
