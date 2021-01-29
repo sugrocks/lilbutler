@@ -99,7 +99,7 @@ async def on_message(message):
                 for attach in message.attachments:
                     r = requests.get(attach.url)
                     uniq_id = 5555555555 - int(time.time())
-                    with open(save_path + str(uniq_id) + '_' + attach['filename'], 'wb') as f:
+                    with open(save_path + str(uniq_id) + '_' + attach.filename, 'wb') as f:
                         for chunk in r.iter_content(chunk_size=1024):
                             if chunk:  # filter out keep-alive new chunks
                                 f.write(chunk)
