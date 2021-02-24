@@ -3,3 +3,4 @@ better_exceptions
 python-dateutil
 requests
 humanize
+discord-py-slash-command

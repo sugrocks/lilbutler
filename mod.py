@@ -3,6 +3,8 @@ import configparser
 
 from discord.ext import commands
 from botutils import del_message, is_mod
+from discord_slash import cog_ext, SlashContext
+from discord_slash.utils import manage_commands
 
 
 class Mod(commands.Cog):
@@ -16,40 +18,49 @@ class Mod(commands.Cog):
     def is_me(self, message):
         return message.author == self.bot.user
 
-    @commands.command(description='Toggle the birthday role, if available.')
-    async def birthday(self, ctx, *, user: discord.Member = None, sid: int = 0):
+    # @commands.command(description='Toggle the birthday role, if available.')
+    @cog_ext.cog_slash(
+        name="birthday",
+        description="Toggle the birthday role, if available.",
+        options=[manage_commands.create_option(
+            name="user",
+            description="The targeted user",
+            option_type=6,
+            required=True
+        )],
+        guild_ids=[217111753614426112, 274151655795064832]
+    )
+    async def _birthday(self, ctx: SlashContext, user: discord.Member=None):
         """Happy Birthday!"""
-        if not is_mod(ctx.message):
-            await ctx.reply('Sorry but you\'re not allowed to do that.')
+        await ctx.respond(eat=True)
+
+        if not is_mod(ctx.channel, ctx.author):
+            await ctx.send('Sorry but you\'re not allowed to do that.', hidden=True)
             return
 
         # Quit if no user mentioned or no id
-        if user is None and sid == 0:
-            await ctx('I need to know who needs to get their roles changed.')
+        if user is None:
+            await ctx.send('I need to know who needs to get their roles changed.', hidden=True)
             return
 
-        # If we don't mention someone, try to use the id instead
-        if user is None:
-            user = self.bot.fetch_user(sid)
-
         try:
-            await ctx.trigger_typing()
+            # await ctx.trigger_typing()
             user_roles = user.roles
 
             # Remove role (if found in user) and return
             for r in user.roles:
-                if str(r.id) == self.conf.get('birthday', str(ctx.message.guild.id)):
+                if str(r.id) == self.conf.get('birthday', str(ctx.guild.id)):
                     user_roles.remove(r)
                     await user.edit(roles=user_roles)
-                    await ctx.reply('Birthday time is over.')
+                    await ctx.send('Birthday time is over.', hidden=True)
                     return
 
             # Add role and return
             for r in user.guild.roles:
-                if str(r.id) == self.conf.get('birthday', str(ctx.message.guild.id)):
+                if str(r.id) == self.conf.get('birthday', str(ctx.guild.id)):
                     user_roles.append(r)
                     await user.edit(roles=user_roles)
-                    await ctx.reply('Happy birthday %s!' % user.mention)
+                    await ctx.send('Happy birthday %s!' % user.mention)
                     return
 
         except Exception as e:
@@ -68,7 +79,7 @@ class Mod(commands.Cog):
     @commands.command(description='In case I went crazy...')
     async def clean(self, ctx):
         """Delete my own messages."""
-        if not is_mod(ctx.message):
+        if not is_mod(ctx.message.channel, ctx.message.author):
             await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 
@@ -84,7 +95,7 @@ class Mod(commands.Cog):
     @commands.command(description='Specify a number or I will clean the last 50 messages.')
     async def nuke(self, ctx, nbr: int = 50):
         """Delete a number of messages."""
-        if not is_mod(ctx.message):
+        if not is_mod(ctx.message.channel, ctx.message.author):
             await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 

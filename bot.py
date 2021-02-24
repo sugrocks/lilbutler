@@ -9,8 +9,9 @@ import better_exceptions
 
 from shutil import copyfile
 from botutils import is_mod
-from datetime import datetime, timedelta
 from discord.ext import commands
+from discord_slash import SlashCommand
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 # Setup logger
@@ -29,6 +30,7 @@ intents = discord.Intents.default()
 intents.members = True
 description = '"You people have too much money!"'
 bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True, intents=intents)
+slash = SlashCommand(bot, sync_on_cog_reload=True)
 
 # init
 better_exceptions.MAX_LENGTH = None
@@ -61,7 +63,8 @@ async def on_ready():
     print('| # ME')
     print('| Name:     ' + bot.user.name)
     print('| ID:       ' + str(bot.user.id))
-    print('| Invite:   https://discord.now.sh/' + str(bot.user.id) + '?p1543892215')
+    print('| Invite:   https://discord.com/oauth2/authorize?client_id=' + str(bot.user.id) +
+          '&permissions=1543892215&scope=applications.commands%20bot')
     print('| SQLite:   ' + sqlite_version)
     print('|-----------------------------------------------------------------------------')
     print('| # MODULES')
@@ -77,13 +80,16 @@ async def on_ready():
             print('|   Nick:   ' + guild.me.nick)
     print('\\-----------------------------------------------------------------------------')
 
+    # Sync slash commands
+    await slash.sync_all_commands(delete_from_unused_guilds=True)
+
 
 # On new messages
 @bot.event
 async def on_message(message):
     # Remove messages if they're in the blacklist
     blacklist = ['discord.gg', 'discordapp.com/invite']
-    if any(thing in message.content for thing in blacklist) and not is_mod(message):
+    if any(thing in message.content for thing in blacklist) and not is_mod(message.channel, message.author):
         await message.delete()
         return
 
