@@ -1,10 +1,8 @@
 import os
-import time
 import logging
 import asyncio
 import discord
 import sqlite3
-import requests
 import humanize
 import configparser
 import better_exceptions

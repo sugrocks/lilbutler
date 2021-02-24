@@ -14,7 +14,6 @@ class Utilities(commands.Cog):
     @commands.command(description='Example: "pizza or taco or burger".')
     async def pick(self, ctx, *, choices: str):
         """Pick an element, delimited by "or"."""
-        author = ctx.message.author
         await ctx.trigger_typing()
         options = choices.split(' or ')
         if len(options) < 2:
@@ -26,11 +25,10 @@ class Utilities(commands.Cog):
     @commands.command(description='Add a name/mention as a parameter to know for someone else.')
     async def howlong(self, ctx, *, user: discord.Member = None):
         """Ask when someone joined the server."""
-        author = ctx.message.author
         await ctx.trigger_typing()
 
         if user is None:
-            user = author
+            user = ctx.message.author
 
         joined = user.joined_at.strftime('%b %d %Y at %I:%M:%S %p UTC')
 
@@ -39,8 +37,6 @@ class Utilities(commands.Cog):
     @commands.command(description='Just to test if you\'re still there.')
     async def ping(self, ctx):
         """PONG!"""
-        author = ctx.message.author
-
         try:
             await ctx.trigger_typing()
             await ctx.reply('PONG !')
