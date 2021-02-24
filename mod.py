@@ -30,7 +30,7 @@ class Mod(commands.Cog):
         )],
         guild_ids=[217111753614426112, 274151655795064832]
     )
-    async def _birthday(self, ctx: SlashContext, user: discord.Member=None):
+    async def _birthday(self, ctx: SlashContext, user: discord.Member = None):
         """Happy Birthday!"""
         await ctx.respond(eat=True)
 
@@ -38,9 +38,9 @@ class Mod(commands.Cog):
             await ctx.send('Sorry but you\'re not allowed to do that.', hidden=True)
             return
 
-        # Quit if no user mentioned or no id
+        # Quit if we can't get the user
         if user is None:
-            await ctx.send('I need to know who needs to get their roles changed.', hidden=True)
+            await ctx.send('I can\'t get the user :(', hidden=True)
             return
 
         try:
