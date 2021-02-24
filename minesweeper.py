@@ -3,7 +3,6 @@
 import random
 
 from discord.ext import commands
-from botutils import del_message
 from string import ascii_lowercase
 
 
@@ -116,30 +115,29 @@ class Minesweeper(commands.Cog):
         """
         try:
             if size < 0:
-                await ctx.send('Sorry %s, but the grid has to be a positive number.' % ctx.message.author.mention)
+                await ctx.reply('Sorry but the grid has to be a positive number.')
             if size > 13:
-                await ctx.send('Sorry %s, but max size is 13.' % ctx.message.author.mention)
+                await ctx.reply('Sorry but max size is 13.')
             elif size == 0:
-                await ctx.send('I can\'t make a grid without any cells, %s!' % ctx.message.author.mention)
+                await ctx.reply('I can\'t make a grid without any cells!')
             elif size == 1:
                 if random.randint(0, 1) == 1:
                     out = '\n||:bomb:||'
                 else:
                     out = '\n||:clap:||'
 
-                await ctx.send('Here\'s your coin toss, %s! %s' % (ctx.message.author.mention, out))
-                await del_message(self, ctx)
+                await ctx.reply('Here\'s your coin toss, %s! %s' % (ctx.message.author.mention, out))
             else:
-                # await self.bot.send_typing(ctx.message.channel)
+                await ctx.trigger_typing()
 
                 if mines == 0:
                     mines = random.randint(size - 1, size * 2 - 1)
 
                 if mines < 1:
-                    await ctx.send('Sorry %s, but I need at least one mine.' % ctx.message.author.mention)
+                    await ctx.reply('Sorry but I need at least one mine.')
                     return
                 elif mines > 80:
-                    await ctx.send('Sorry %s, but over 80 mines is too much.' % ctx.message.author.mention)
+                    await ctx.reply('Sorry but over 80 mines is too much.')
                     return
 
                 start = (
@@ -164,8 +162,7 @@ class Minesweeper(commands.Cog):
                           .replace('7', '||:seven:||')
                           .replace('8', '||:height:||'))
 
-                await ctx.send('%s - %dx%d - %dx:bomb: %s' % (ctx.message.author.mention, size, size, mines, out))
-                await del_message(self, ctx)
+                await ctx.reply('%dx%d - %dx:bomb: %s' % (size, size, mines, out))
         except Exception as e:
             print('>>> ERROR minesweeper ', e)
 

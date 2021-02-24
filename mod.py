@@ -20,12 +20,12 @@ class Mod(commands.Cog):
     async def birthday(self, ctx, *, user: discord.Member = None, sid: int = 0):
         """Happy Birthday!"""
         if not is_mod(ctx.message):
-            await ctx.send('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
+            await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 
         # Quit if no user mentioned or no id
         if user is None and sid == 0:
-            await ctx.send('%s: I need to know who needs to get their roles changed.' % ctx.message.author.mention)
+            await ctx('I need to know who needs to get their roles changed.')
             return
 
         # If we don't mention someone, try to use the id instead
@@ -33,7 +33,7 @@ class Mod(commands.Cog):
             user = self.bot.fetch_user(sid)
 
         try:
-            # await self.bot.send_typing(ctx.message.channel)
+            await ctx.trigger_typing()
             user_roles = user.roles
 
             # Remove role (if found in user) and return
@@ -41,7 +41,7 @@ class Mod(commands.Cog):
                 if str(r.id) == self.conf.get('birthday', str(ctx.message.guild.id)):
                     user_roles.remove(r)
                     await user.edit(roles=user_roles)
-                    await ctx.send('%s: Removed role.' % ctx.message.author.mention)
+                    await ctx.reply('Birthday time is over.')
                     return
 
             # Add role and return
@@ -49,7 +49,7 @@ class Mod(commands.Cog):
                 if str(r.id) == self.conf.get('birthday', str(ctx.message.guild.id)):
                     user_roles.append(r)
                     await user.edit(roles=user_roles)
-                    await ctx.send('%s: Added role.' % ctx.message.author.mention)
+                    await ctx.reply('Happy birthday %s!' % user.mention)
                     return
 
         except Exception as e:
@@ -59,7 +59,7 @@ class Mod(commands.Cog):
     async def sleep(self, ctx):
         """Stops the bot."""
         if str(ctx.message.author.id) != self.conf.get('bot', 'owner_id'):
-            await ctx.send('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
+            await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 
         await del_message(self, ctx)
@@ -69,14 +69,14 @@ class Mod(commands.Cog):
     async def clean(self, ctx):
         """Delete my own messages."""
         if not is_mod(ctx.message):
-            await ctx.send('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
+            await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 
         try:
-            # await self.bot.send_typing(ctx.message.channel)
+            await ctx.trigger_typing()
             deleted = await ctx.message.channel.purge(before=ctx.message, limit=1000, check=self.is_me)
             if len(deleted) > 2:
-                await ctx.send('Deleted %d messages.' % len(deleted))
+                await ctx.send('Deleted %d of my own messages.' % len(deleted))
             await del_message(self, ctx)
         except Exception as e:
             print('>>> ERROR clean ', e)
@@ -85,11 +85,11 @@ class Mod(commands.Cog):
     async def nuke(self, ctx, nbr: int = 50):
         """Delete a number of messages."""
         if not is_mod(ctx.message):
-            await ctx.send('%s: Sorry, but you\'re not allowed to do that.' % ctx.message.author.mention)
+            await ctx.reply('Sorry but you\'re not allowed to do that.')
             return
 
         try:
-            # await self.bot.send_typing(ctx.message.channel)
+            await ctx.trigger_typing()
             deleted = await ctx.message.channel.purge(before=ctx.message, limit=nbr)
             if len(deleted) > 2:
                 await ctx.send('Deleted %d messages.' % len(deleted))

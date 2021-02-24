@@ -2,7 +2,6 @@ import random
 import discord
 import requests
 
-from botutils import del_message
 from discord.ext import commands
 
 
@@ -16,26 +15,26 @@ class Utilities(commands.Cog):
     async def pick(self, ctx, *, choices: str):
         """Pick an element, delimited by "or"."""
         author = ctx.message.author
-        # await self.bot.send_typing(ctx.message.channel)
+        await ctx.trigger_typing()
         options = choices.split(' or ')
         if len(options) < 2:
-            await ctx.send('%s: I need two or more elements to choose.' % author.mention)
+            await ctx.reply('I need two or more elements to choose from.')
             return
 
-        await ctx.send('%s: %s' % (author.mention, random.choice(options)))
+        await ctx.reply(random.choice(options))
 
     @commands.command(description='Add a name/mention as a parameter to know for someone else.')
     async def howlong(self, ctx, *, user: discord.Member = None):
         """Ask when someone joined the server."""
         author = ctx.message.author
-        # await self.bot.send_typing(ctx.message.channel)
+        await ctx.trigger_typing()
 
         if user is None:
             user = author
 
         joined = user.joined_at.strftime('%b %d %Y at %I:%M:%S %p UTC')
 
-        await ctx.send('%s: %s joined this server %s' % (author.mention, user.name, joined))
+        await ctx.reply('%s joined this server %s' % (user.name, joined))
 
     @commands.command(description='Just to test if you\'re still there.')
     async def ping(self, ctx):
@@ -43,28 +42,27 @@ class Utilities(commands.Cog):
         author = ctx.message.author
 
         try:
-            # await self.bot.send_typing(ctx.message.channel)
-            await ctx.send('%s: PONG !' % author.mention)
-            await del_message(self, ctx)
+            await ctx.trigger_typing()
+            await ctx.reply('PONG !')
         except Exception as e:
-            await ctx.send('%s: PONG ?' % author.mention)
+            await ctx.send('PONG ?')
             print('>>> ERROR Ping ', e)
 
     @commands.command(description='Ask using the date in this format: YYYY-MM-DD')
     async def cn(self, ctx, *, param: str = None):
         """Get Cartoon Network's schedule"""
         author = ctx.message.author
-        # await self.bot.send_typing(ctx.message.channel)
+        await ctx.trigger_typing()
 
         lstreq = requests.get('https://api.ctoon.network/schedule/days')
         lst = lstreq.json()
 
         if param is None:
-            await ctx.send('%s: Please specify a date (`~cn YYYY-MM-DD`). ' % author.mention)
+            await ctx.reply('Please specify a date (`~cn YYYY-MM-DD`).')
             return
 
         if param not in lst:
-            await ctx.send('%s: Unknown date given (`~cn YYYY-MM-DD`).' % author.mention)
+            await ctx.reply('Unknown date given (`~cn YYYY-MM-DD`).')
             return
 
         schreq = requests.get('https://api.ctoon.network/schedule/day/%s' % param)
@@ -85,7 +83,7 @@ class Utilities(commands.Cog):
                 src_title = 'Zap2it'
                 colour = 0xACFFAD  # color: Zap2it Green
             else:
-                await ctx.send('%s: Unknown date given (`~cn YYYY-MM-DD`).' % author.mention)
+                await ctx.reply('Unknown date given (`~cn YYYY-MM-DD`).')
                 return
 
             em = discord.Embed(title='Schedule for ' + sch['date'] + ' (via ' + src_title + ')', colour=colour)
@@ -125,9 +123,9 @@ class Utilities(commands.Cog):
 
             # It's supposed to not tell the user to check their DMs when already in DM but oh well
             if ctx.message.channel is not None:
-                await ctx.send('%s: Please check your DMs.' % author.mention)
+                await ctx.reply('Please check your DMs.')
         except discord.errors.Forbidden:
-            await ctx.send('%s: It looks like you disabled DMs from strangers. I can\'t send the message.' % author.mention)
+            await ctx.reply('It looks like you disabled DMs from strangers. I can\'t send the message.')
 
 
 def setup(bot):

@@ -97,13 +97,8 @@ async def on_message(message):
             save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
             if save_path:
                 for attach in message.attachments:
-                    r = requests.get(attach.url)
-                    uniq_id = 5555555555 - int(time.time())
-                    with open(save_path + str(uniq_id) + '_' + attach.filename, 'wb') as f:
-                        for chunk in r.iter_content(chunk_size=1024):
-                            if chunk:  # filter out keep-alive new chunks
-                                f.write(chunk)
-                                f.flush()
+                    uniq_id = 5555555555 - int(datetime.timestamp(message.created_at))
+                    await attach.save(save_path + str(uniq_id) + '_' + attach.filename)
         except configparser.NoOptionError:
             pass
 
