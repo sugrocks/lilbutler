@@ -2,14 +2,13 @@ import discord
 import configparser
 import better_exceptions
 
-from datetime import datetime
-
 # Setup config
 conf = configparser.ConfigParser()
 conf.read('./config.ini')
 
 # init
 better_exceptions.MAX_LENGTH = None
+
 
 # Setup discord-stuff
 class MyClient(discord.Client):
@@ -31,9 +30,9 @@ class MyClient(discord.Client):
 
                 print(str)
 
-
         print('Done!')
         exit(0)
+
 
 client = MyClient()
 client.run(conf.get('bot', 'token'))

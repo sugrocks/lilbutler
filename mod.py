@@ -32,7 +32,7 @@ class Mod(commands.Cog):
     )
     async def _birthday(self, ctx: SlashContext, user: discord.Member = None):
         """Happy Birthday!"""
-        #await ctx.respond(eat=True)
+        # await ctx.respond(eat=True)
 
         if not is_mod(ctx.channel, ctx.author):
             await ctx.send('Sorry but you\'re not allowed to do that.', hidden=True)
