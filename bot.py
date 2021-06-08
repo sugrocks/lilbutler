@@ -38,7 +38,7 @@ whitelisted_guilds = conf.get('bot', 'whitelist').split(',')
 db = None
 sqlite_version = '???'
 invites = {}
-banned_names = ['discord.gg', 'free games', 'discord.io', 'discord.me', 'invite.gg', 'twitch.tv', 'twitter.com']
+banned_names = ['free games', 'discord .', 'discord.', 'invite.gg', 'twitch.', 'twitter.', 'twitter .', 'twitter dot']
 
 
 # On bot login
@@ -115,7 +115,7 @@ async def on_member_join(member):
 
     # Check if it's not just an ad
     try:
-        if any(x in member.name for x in banned_names):
+        if any(x in member.name.lower() for x in banned_names):
             await member.guild.ban(member, delete_message_days=7, reason="Banned name")
             autoban = True
     except:
@@ -206,10 +206,7 @@ async def on_member_remove(member):
 
 # On user ban
 @bot.event
-async def on_member_ban(member):
-    # Notify in defined channel for the guild
-    guild = member.guild
-
+async def on_member_ban(guild, member):
     try:
         chan = conf.get('joinlogs', str(guild.id))  # get channel id who gets mod logs
     except configparser.NoOptionError:

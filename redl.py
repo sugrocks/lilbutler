@@ -17,8 +17,8 @@ class MyClient(discord.Client):
     async def on_ready(self):
         print('Hi')
 
-        a = datetime(2021, 1, 30, 13, 40, 0)
-        b = datetime(2022, 1, 30, 13, 30, 0)
+        a = datetime(2021, 4, 29, 0, 0, 0)
+        b = datetime(2021, 5, 2, 17, 0, 0)
         channels = [304390046260396034, 350380450528886784]
         for c in channels:
             channel = self.get_channel(c)
@@ -42,6 +42,7 @@ class MyClient(discord.Client):
                         pass
 
         print('Done!')
+        exit(0)
 
 
 client = MyClient()
