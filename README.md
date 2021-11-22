@@ -10,8 +10,15 @@
 Just a discord bot. It has some commands and it deletes links to other servers.
 
 
+**NOTE FOR UPGRADE FROM `discord.py` TO `novus`:** Please run this to remove the previous libaries.
+```
+pip uninstall discord.py
+pip uninstall discord-py-slash-command
+```
+
+
 ## Requirements
-- Python 3.6
+- Python 3.8+
 - A Discord bot created. Head over there: https://discordapp.com/developers/applications/me
     + Create an app
     + Then convert it to a bot account

@@ -1,6 +1,5 @@
-discord.py
 better_exceptions
+humanize
+novus
 python-dateutil
 requests
-humanize
-discord-py-slash-command

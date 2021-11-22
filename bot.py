@@ -10,7 +10,6 @@ import better_exceptions
 from shutil import copyfile
 from botutils import is_mod
 from discord.ext import commands
-from discord_slash import SlashCommand
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -29,8 +28,81 @@ conf.read('./config.ini')
 intents = discord.Intents.default()
 intents.members = True
 description = '"You people have too much money!"'
-bot = commands.Bot(max_messages=15000, command_prefix='~', description=description, pm_help=True, intents=intents)
-slash = SlashCommand(bot, sync_on_cog_reload=True)
+bot = commands.Bot(
+    max_messages=15000,
+    command_prefix=commands.when_mentioned_or('~'),
+    description=description,
+    pm_help=True,
+    intents=intents
+)
+
+commands = [
+]
+
+commands = [
+    discord.ApplicationCommand(
+        name="sleep",
+        description="Stop the bot, might come back automatically."
+    ),
+    discord.ApplicationCommand(
+        name="clean",
+        description="Delete my own messages."
+    ),
+    discord.ApplicationCommand(
+        name="ping",
+        description="PONG!"
+    ),
+    discord.ApplicationCommand(
+        name="birthday",
+        description="Toggle the birthday role, if available.",
+        options=[discord.ApplicationCommandOption(
+            name="user",
+            description="The targeted user",
+            type=discord.ApplicationCommandOptionType.user,
+            required=True
+        )]
+    ),
+    discord.ApplicationCommand(
+        name="cn",
+        description="Get Cartoon Network's schedule",
+        options=[discord.ApplicationCommandOption(
+            name="date",
+            description="Type a date in the YYYY-MM-DD format.",
+            type=discord.ApplicationCommandOptionType.string,
+            required=True
+        )]
+    ),
+    discord.ApplicationCommand(
+        name="howlong",
+        description="Get when someone joined the server.",
+        options=[discord.ApplicationCommandOption(
+            name="user",
+            description="The targeted user",
+            type=discord.ApplicationCommandOptionType.user,
+            required=True
+        )]
+    ),
+    discord.ApplicationCommand(
+        name="pick",
+        description="Pick an element in a list",
+        options=[discord.ApplicationCommandOption(
+            name="list",
+            description="Type multiple choices, delimited by a comma.",
+            type=discord.ApplicationCommandOptionType.string,
+            required=True
+        )]
+    ),
+    discord.ApplicationCommand(
+        name="nuke",
+        description="Delete a number of messages.",
+        options=[discord.ApplicationCommandOption(
+            name="count",
+            description="Number of messages to delete (defaults to 50).",
+            type=discord.ApplicationCommandOptionType.number,
+            required=False
+        )]
+    )
+]
 
 # init
 better_exceptions.MAX_LENGTH = None
@@ -64,24 +136,22 @@ async def on_ready():
     print('| Name:     ' + bot.user.name)
     print('| ID:       ' + str(bot.user.id))
     print('| Invite:   https://discord.com/oauth2/authorize?client_id=' + str(bot.user.id) +
-          '&permissions=1543892215&scope=applications.commands%20bot')
+          '&permissions=397553298678&scope=applications.commands%20bot')
     print('| SQLite:   ' + sqlite_version)
     print('|-----------------------------------------------------------------------------')
     print('| # MODULES')
     # Import our 'modules'
     bot.load_extension('utilities')
     bot.load_extension('mod')
-    bot.load_extension('minesweeper')
     print('|-----------------------------------------------------------------------------')
     print('| # SERVERS (' + str(len(bot.guilds)) + ')')
     for guild in bot.guilds:
         print('| > Name:   ' + guild.name + ' (' + str(guild.id) + ')')
+        print('|   Registering commands...')
+        await bot.register_application_commands(commands, guild=guild)
         if guild.me.nick:
             print('|   Nick:   ' + guild.me.nick)
     print('\\-----------------------------------------------------------------------------')
-
-    # Sync slash commands
-    await slash.sync_all_commands(delete_from_unused_guilds=True)
 
 
 # On new messages
@@ -130,23 +200,6 @@ async def on_member_join(member):
     if chan is None:
         return  # If there's nothing, don't do anything
 
-    invite_code = 'a recently made invite'
-    invite_user = 'someone, please check audit log'
-    user_created = 'someday'
-
-    try:
-        curr_invites = {}
-        sinv = await guild.invites()
-        for invite in sinv:
-            curr_invites[invite.code] = invite.uses
-
-        for invite in invites[str(guild.id)]:
-            if invite.uses != curr_invites[invite.code]:
-                invite_code = invite.code
-                invite_user = '**' + invite.inviter.name + '**#' + invite.inviter.discriminator
-    except:
-        print('ERROR: Can\'t find the invite used for user join')
-
     try:
         if member.created_at is not None:
             user_created = "{} ({} UTC)".format(humanize.naturaltime(member.created_at + (datetime.now() - datetime.utcnow())),
@@ -156,19 +209,17 @@ async def on_member_join(member):
 
     # Build an embed
     if autoban:
-        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the guild [WARNING]',
+        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
                            description='USER WILL BE BANNED AUTOMATICALLY. \n' +
-                           member.mention + ' joined using ' + invite_code +
-                           ' (created by ' + invite_user + ').\n' +
+                           member.mention + ' joined.\n' +
                            'Account was created ' + user_created,
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
     else:
-        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the guild',
-                           description=member.mention + ' joined using ' + invite_code +
-                           ' (created by ' + invite_user + ').\n' +
+        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
+                           description=member.mention + ' joined.\n' +
                            'Account was created ' + user_created,
                            colour=0x23D160, timestamp=datetime.utcnow())  # color: green
-    em.set_thumbnail(url=member.avatar_url)
+    em.set_thumbnail(url=member.avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -195,9 +246,9 @@ async def on_member_remove(member):
         diff.months, diff.days, diff.hours, diff.minutes, diff.seconds)
 
     # Build an embed
-    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the guild', description=member_since,
+    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the server', description=member_since,
                        colour=0xE81010, timestamp=datetime.utcnow())  # color: red
-    em.set_thumbnail(url=member.avatar_url)
+    em.set_thumbnail(url=member.avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -216,9 +267,9 @@ async def on_member_ban(guild, member):
         return  # If there's nothing, don't do anything
 
     # Build an embed
-    em = discord.Embed(title=member.name + ' is now banned from the guild',
+    em = discord.Embed(title=member.name + ' is now banned from the server',
                        colour=0x7289DA, timestamp=datetime.utcnow())  # color: blue
-    em.set_thumbnail(url=member.avatar_url)
+    em.set_thumbnail(url=member.avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -250,7 +301,7 @@ async def on_message_delete(message):
     # Build an embed
     em = discord.Embed(description=message.content + ' ' + ' '.join(attch),
                        colour=0x607D8B, timestamp=message.created_at)  # color: dark grey
-    em.set_author(name=author.name, icon_url=author.avatar_url)
+    em.set_author(name=author.name, icon_url=author.avatar.url)
     em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
     if len(attch) > 0:
@@ -286,27 +337,11 @@ async def on_message_edit(old, message):
     em = discord.Embed(colour=0x800080, timestamp=message.created_at)  # color: purple
     em.add_field(name='Before', inline=False, value=old.content + ' ' + ' '.join(attch))
     em.add_field(name='After', inline=False, value=message.content + ' ' + ' '.join(attch))
-    em.set_author(name=author.name, icon_url=author.avatar_url)
+    em.set_author(name=author.name, icon_url=author.avatar.url)
     em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
     # Send message with embed
     await bot.get_channel(int(chan)).send('Message edited', embed=em)
-
-
-# Update invite list
-async def check_invites():
-    await bot.wait_until_ready()
-    ic = 0
-    while not bot.is_closed:
-        for guild in bot.guilds:
-            try:
-                ic += 1
-                invites[str(guild.id)] = await guild.invites()
-                if ic > 2:  # check three guilds and wait 5 seconds
-                    await asyncio.sleep(5)
-                    ic = 0
-            except:
-                pass
 
 
 # Delete old messages in temp channel
@@ -337,6 +372,12 @@ async def clean_temp():
         await asyncio.sleep(60 * 15)  # sleep 15 minutes
 
 
+async def main():
+    # bot.loop.create_task(clean_temp())
+    await bot.login(conf.get('bot', 'token'))
+    await bot.connect()
+
+
 # Launch
 if __name__ == '__main__':
     try:
@@ -356,8 +397,7 @@ if __name__ == '__main__':
         exit(1)
 
     try:
-        bot.loop.create_task(clean_temp())
-        bot.loop.create_task(check_invites())
-        bot.run(conf.get('bot', 'token'))
+        loop = bot.loop
+        loop.run_until_complete(main())
     except:
         exit(5)
