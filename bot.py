@@ -382,7 +382,6 @@ async def clean_temp():
             limit_date = datetime.now() - timedelta(days=7)
 
             async for message in chan.history(before=limit_date, oldest_first=True):  # load logs older than 7 days
-                print(message.content)
                 try:
                     await message.delete()
                     await asyncio.sleep(2)
