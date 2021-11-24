@@ -66,30 +66,26 @@ class Mod(commands.Cog):
     @commands.command(description='In case I went crazy...')
     async def clean(self, ctx):
         """Delete my own messages."""
-        if not is_mod(ctx.message.channel, ctx.author):
+        if not is_mod(ctx.channel, ctx.author):
             await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
         try:
-            await ctx.trigger_typing()
-            deleted = await ctx.message.channel.purge(before=ctx.message, limit=1000, check=self.is_me)
-            if len(deleted) > 2:
-                await reply(ctx, 'Deleted %d of my own messages.' % len(deleted), ephemeral=True)
+            deleted = await ctx.channel.purge(before=ctx.message, limit=1000, check=self.is_me)
+            await reply(ctx, 'Deleted %d of my own messages.' % len(deleted), ephemeral=True)
         except Exception as e:
             print('>>> ERROR clean ', e)
 
     @commands.command(description='Specify a number or I will clean the last 50 messages.')
-    async def nuke(self, ctx, nbr: int = 50):
+    async def nuke(self, ctx, count: int = 50):
         """Delete a number of messages."""
-        if not is_mod(ctx.message.channel, ctx.author):
+        if not is_mod(ctx.channel, ctx.author):
             await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
         try:
-            await ctx.trigger_typing()
-            deleted = await ctx.message.channel.purge(before=ctx.message, limit=nbr)
-            if len(deleted) > 2:
-                await reply(ctx, 'Deleted %d messages.' % len(deleted), ephemeral=True)
+            deleted = await ctx.channel.purge(before=ctx.message, limit=int(count))
+            await reply(ctx, 'Deleted %d messages.' % len(deleted), ephemeral=True)
         except Exception as e:
             print('>>> ERROR clean ', e)
 

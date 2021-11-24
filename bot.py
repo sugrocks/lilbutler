@@ -1,9 +1,9 @@
 import os
+import re
 import logging
 import asyncio
 import discord
 import sqlite3
-import humanize
 import configparser
 import better_exceptions
 
@@ -32,12 +32,9 @@ bot = commands.Bot(
     max_messages=15000,
     command_prefix=commands.when_mentioned_or('~'),
     description=description,
-    pm_help=True,
+    help_command=None,
     intents=intents
 )
-
-commands = [
-]
 
 commands = [
     discord.ApplicationCommand(
@@ -79,7 +76,7 @@ commands = [
             name="user",
             description="The targeted user",
             type=discord.ApplicationCommandOptionType.user,
-            required=True
+            required=False
         )]
     ),
     discord.ApplicationCommand(
@@ -111,6 +108,7 @@ db = None
 sqlite_version = '???'
 invites = {}
 banned_names = ['free games', 'discord .', 'discord.', 'invite.gg', 'twitch.', 'twitter.', 'twitter .', 'twitter dot']
+social_galleries = ['twitter.com', 'pixiv.net', 'imgur.com', 'reddit.com', 'redgifs.com']
 
 
 # On bot login
@@ -176,6 +174,18 @@ async def on_message(message):
         except configparser.NoOptionError:
             pass
 
+    # To save URLs for third party services where we should archive media
+    if any(thing in message.content for thing in social_galleries):
+        save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
+        if save_path:
+            matches = re.finditer(r"(https?://[^\s]+)", message.content)
+            for _, match in enumerate(matches):
+                url = match.group()
+                # One more time
+                if any(thing in url for thing in social_galleries):
+                    with open(save_path + 'todl.txt', 'a+') as f:
+                        f.write(url + '\n')
+
 
 # On user join
 @bot.event
@@ -200,10 +210,11 @@ async def on_member_join(member):
     if chan is None:
         return  # If there's nothing, don't do anything
 
+    user_created = '???'
+
     try:
         if member.created_at is not None:
-            user_created = "{} ({} UTC)".format(humanize.naturaltime(member.created_at + (datetime.now() - datetime.utcnow())),
-                                                member.created_at)
+            user_created = '<t:' + str(int(member.created_at.timestamp())) + ':R>'
     except:
         print('ERROR: Can\'t find the creation date for user join')
 
@@ -213,13 +224,15 @@ async def on_member_join(member):
                            description='USER WILL BE BANNED AUTOMATICALLY. \n' +
                            member.mention + ' joined.\n' +
                            'Account was created ' + user_created,
-                           colour=0x23D160, timestamp=datetime.utcnow())  # color: green
+                           colour=0x23D160,  # color: green
+                           timestamp=datetime.utcnow())
     else:
         em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
                            description=member.mention + ' joined.\n' +
                            'Account was created ' + user_created,
-                           colour=0x23D160, timestamp=datetime.utcnow())  # color: green
-    em.set_thumbnail(url=member.avatar.url)
+                           colour=0x23D160,  # color: green
+                           timestamp=datetime.utcnow())
+    em.set_thumbnail(url=member.display_avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -241,14 +254,25 @@ async def on_member_remove(member):
         return  # If there's nothing, don't do anything
 
     # Count for how long an user has been a member
-    diff = relativedelta(datetime.utcnow(), member.joined_at)
-    member_since = member.mention + ' was a member for %d months, %d days, %d hours, %d minutes and %d seconds.' % (
-        diff.months, diff.days, diff.hours, diff.minutes, diff.seconds)
+    diff = relativedelta(datetime.utcnow(), member.joined_at.replace(tzinfo=None))
+    member_since = member.mention + ' was a member for '
+    if diff.years > 0:
+        member_since += str(diff.years) + ' year' + ('s ' if diff.years != 1 else ' ')
+    if diff.months > 0:
+        member_since += str(diff.months) + ' month' + ('s ' if diff.months != 1 else ' ')
+    if diff.days > 0:
+        member_since += str(diff.days) + ' day' + ('s ' if diff.days != 1 else ' ')
+    if diff.hours > 0:
+        member_since += str(diff.hours) + ' hour' + ('s ' if diff.hours != 1 else ' ')
+    member_since += str(diff.minutes) + ' minute' + ('s and ' if diff.minutes != 1 else ' and ')
+    member_since += str(diff.seconds) + ' second' + ('s.' if diff.seconds != 1 else '.')
 
     # Build an embed
-    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the server', description=member_since,
-                       colour=0xE81010, timestamp=datetime.utcnow())  # color: red
-    em.set_thumbnail(url=member.avatar.url)
+    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the server',
+                       description=member_since,
+                       colour=0xE81010,  # color: red
+                       timestamp=datetime.utcnow())
+    em.set_thumbnail(url=member.display_avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -268,8 +292,9 @@ async def on_member_ban(guild, member):
 
     # Build an embed
     em = discord.Embed(title=member.name + ' is now banned from the server',
-                       colour=0x7289DA, timestamp=datetime.utcnow())  # color: blue
-    em.set_thumbnail(url=member.avatar.url)
+                       colour=0x7289DA,  # color: blue
+                       timestamp=datetime.utcnow())
+    em.set_thumbnail(url=member.display_avatar.url)
     em.set_footer(text='ID: ' + str(member.id))
 
     # Send message with embed
@@ -300,8 +325,9 @@ async def on_message_delete(message):
 
     # Build an embed
     em = discord.Embed(description=message.content + ' ' + ' '.join(attch),
-                       colour=0x607D8B, timestamp=message.created_at)  # color: dark grey
-    em.set_author(name=author.name, icon_url=author.avatar.url)
+                       colour=0x607D8B,  # color: dark grey
+                       timestamp=message.created_at)
+    em.set_author(name=author.name, icon_url=author.display_avatar.url)
     em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
     if len(attch) > 0:
@@ -337,7 +363,7 @@ async def on_message_edit(old, message):
     em = discord.Embed(colour=0x800080, timestamp=message.created_at)  # color: purple
     em.add_field(name='Before', inline=False, value=old.content + ' ' + ' '.join(attch))
     em.add_field(name='After', inline=False, value=message.content + ' ' + ' '.join(attch))
-    em.set_author(name=author.name, icon_url=author.avatar.url)
+    em.set_author(name=author.name, icon_url=author.display_avatar.url)
     em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
     # Send message with embed
@@ -348,15 +374,16 @@ async def on_message_edit(old, message):
 async def clean_temp():
     await bot.wait_until_ready()
 
-    while not bot.is_closed:
+    while not bot.is_closed():
         conf.read('./config.ini')  # re-read, in case we changed something
         channels = dict(conf.items('cleantemp'))
 
         for channel in channels:
-            chan = bot.get_channel(channel)
-            limit_date = datetime.utcnow() - timedelta(days=7)
+            chan = bot.get_channel(int(channel))
+            limit_date = datetime.now() - timedelta(days=7)
 
             async for message in chan.history(before=limit_date, oldest_first=True):  # load logs older than 7 days
+                print(message.content)
                 try:
                     await message.delete()
                     await asyncio.sleep(2)
@@ -369,12 +396,13 @@ async def clean_temp():
 
                 # break  # we only needed the first message in log, actually
 
-        await asyncio.sleep(60 * 15)  # sleep 15 minutes
+        await asyncio.sleep(60 * 5)  # sleep 15 minutes
 
 
 async def main():
-    # bot.loop.create_task(clean_temp())
     await bot.login(conf.get('bot', 'token'))
+    bot.loop.create_task(clean_temp())
+    await bot.register_application_commands(None)  # Clear commands
     await bot.connect()
 
 

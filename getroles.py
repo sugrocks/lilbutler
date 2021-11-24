@@ -18,7 +18,7 @@ async def on_ready():
         clist = []
 
         for r in roles:
-            if r.colour.to_tuple() != (0, 0, 0):  # Roles without colors are not dumped
+            if r.colour.to_rgb() != (0, 0, 0):  # Roles without colors are not dumped
                 clist.append({
                     'id': r.position,
                     'r': r.colour.r,
@@ -37,6 +37,8 @@ async def on_ready():
         for rl in slist:
             print('%s (%s) - #%02x%02x%02x' %
                   (rl['name'], rl['snowflake'], rl['r'], rl['g'], rl['b']))
+
+    print('\n\nDone!')
 
 
 # Launch

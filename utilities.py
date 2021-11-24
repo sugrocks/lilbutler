@@ -12,16 +12,16 @@ class Utilities(commands.Cog):
         self.bot = bot
         print('| Loaded:   utilities')
 
-    @commands.command(description='Example: "pizza or taco or burger".')
-    async def pick(self, ctx, *, choices: str):
+    @commands.command(description='Example: "pizza, taco, burger".')
+    async def pick(self, ctx, *, list: str):
         """Pick an element, delimited by ","."""
         await ctx.trigger_typing()
-        options = choices.split(',')
+        options = list.split(',')
         if len(options) < 2:
             await reply(ctx, 'I need two or more elements to choose from.', ephemeral=True)
             return
 
-        await reply(ctx, random.choice(options).trim())
+        await reply(ctx, 'In `' + list.replace('`', "'") + '`:\n' + random.choice(options).strip())
 
     @commands.command(description='Add a name/mention as a parameter to know for someone else.')
     async def howlong(self, ctx, *, user: discord.Member = None):
@@ -31,7 +31,8 @@ class Utilities(commands.Cog):
         if user is None:
             user = ctx.author
 
-        joined = user.joined_at.strftime('%b %d %Y at %I:%M:%S %p UTC')
+        # joined = user.joined_at.strftime('%b %d %Y at %I:%M:%S %p UTC')
+        joined = '<t:' + str(int(user.joined_at.timestamp())) + ':F>'
 
         await reply(ctx, '%s joined this server %s' % (user.name, joined))
 
