@@ -95,4 +95,3 @@ Use the slash commands or prepend everything with `lil!`
     + Specify a number or it will remove the last 50 messages.
 - `^` `sleep`: Stops the bot.
     + But it might come back! (If you put it in a loop or something.)
-- `~help <command|category>`: Display the help message
