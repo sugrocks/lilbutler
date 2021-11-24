@@ -43,7 +43,7 @@ python bot.py
 - `automute`: list of `<server id> = <role id>` where the role id is a mute role, given to people in discord bans
 - `birthday`: list of `<server id> = <role id>` where the role id is a birthday role
 - `joinlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
-- `msglogs: list of `<server id> = <channel id>` where deleted message are logged
+- `msglogs`: list of `<server id> = <channel id>` where deleted message are logged
 - `cleantemp`: list of channels to clean after 100 messages or a week. Put whatever you want as value, only the key counts
 - `savepics`: list of `<channel id> = <path>` where pics sent in the channel are saved to a local path
 
