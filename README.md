@@ -40,7 +40,6 @@ python bot.py
 - `bot.token`: the discord bot token (needed to login to Discord)
 - `bot.owner_id`: the ID of the owner (needed to stop the bot remotly)
 - `bot.whitelist` list of ids (delemited by a comma without spaces) of servers the bot can be in
-- `automute`: list of `<server id> = <role id>` where the role id is a mute role, given to people in discord bans
 - `birthday`: list of `<server id> = <role id>` where the role id is a birthday role
 - `joinlogs`: list of `<server id> = <channel id>` where joins/leaves/bans logs are going to be posted
 - `msglogs`: list of `<server id> = <channel id>` where deleted message are logged
@@ -68,30 +67,32 @@ whitelist = 274151655795064832,199198145811447808
 274153638002294784 = sure
 274153443675996160 = whatever
 274153469827350528 = yes, like that
+
+[savepics]
+; channel id = path to folder/
+274153487359672320 = /opt/archives/
 ```
 
 
 ## Commands
 _(`*` means the user needs the `kick` role in the channel, `^` for owner)_
 
-- `~countdown`: Time until next SU episode.
-    + Will return a countdown.
-- `~cn`: Get Cartoon Network's schedule
-    + Ask using the date in this format: YYYY-MM-DD
-- `~pick`: Pick an element, delimited by "or".
-    + Example: `pizza or taco or burger`.
-- `~howlong`: Get when you joined the server.
+Use the slash commands or prepend everything with `lil!`
+
+- `cn <YYYY-MM-DD>`: Get Cartoon Network's schedule
+    + Ask schedule for a specific day.
+- `pick`: Pick an element, delimited by ",".
+    + Example: `pizza, taco, burger`.
+- `howlong [@user]`: Get when you joined the server.
     + Add a name/mention as a parameter to know for someone else.
-- `~bumps`: See how many times you bumped the server.
-    + Getting successfully bumps from ServerHound increment your score.
-- `~ping`: PONG!
+- `ping`: PONG!
     + Just to test if you're still there.
-- `*` `~birthday`: Happy Birthday!
+- `*` `birthday <@user>`: Happy Birthday!
     + Toggle the birthday role, if available.
-- `*` `~clean`: The bot deletes is own messages.
+- `*` `clean`: The bot deletes is own messages.
     + In case the bot went crazy...
-- `*` `~nuke <n|50>`: Delete a number of messages. (`n` is optional)
-    + Specify a number or it will clean the last 50 messages.
-- `^` `~sleep`: Stops the bot.
-    + But it might come back! (If you put it in a loop or something)
+- `*` `nuke <n|50>`: Delete a number of messages. (`n` is optional)
+    + Specify a number or it will remove the last 50 messages.
+- `^` `sleep`: Stops the bot.
+    + But it might come back! (If you put it in a loop or something.)
 - `~help <command|category>`: Display the help message
