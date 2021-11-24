@@ -7,7 +7,7 @@ conf.read('./config.ini')
 
 # Setup discord-stuff
 description = '"ignore me pls"'
-bot = commands.Bot(command_prefix='!!!!!', description=description)
+bot = commands.Bot(command_prefix='lilR!', description=description)
 
 
 # On bot login

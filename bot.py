@@ -27,11 +27,10 @@ conf.read('./config.ini')
 # Setup discord-stuff
 intents = discord.Intents.default()
 intents.members = True
-description = '"You people have too much money!"'
 bot = commands.Bot(
     max_messages=15000,
-    command_prefix=commands.when_mentioned_or('~'),
-    description=description,
+    command_prefix=commands.when_mentioned_or('lil!'),
+    description='"You people have too much money!"',
     help_command=None,
     intents=intents
 )
