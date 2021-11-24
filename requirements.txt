@@ -1,6 +1,4 @@
-discord.py
-better_exceptions
-python-dateutil
-requests
-humanize
-discord-py-slash-command
+better-exceptions~=0.3.3
+novus==0.0.4
+python-dateutil~=2.8.2
+requests~=2.26.0

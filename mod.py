@@ -2,9 +2,7 @@ import discord
 import configparser
 
 from discord.ext import commands
-from botutils import del_message, is_mod
-from discord_slash import cog_ext, SlashContext
-from discord_slash.utils import manage_commands
+from botutils import is_mod, reply
 
 
 class Mod(commands.Cog):
@@ -18,29 +16,18 @@ class Mod(commands.Cog):
     def is_me(self, message):
         return message.author == self.bot.user
 
-    # @commands.command(description='Toggle the birthday role, if available.')
-    @cog_ext.cog_slash(
-        name="birthday",
-        description="Toggle the birthday role, if available.",
-        options=[manage_commands.create_option(
-            name="user",
-            description="The targeted user",
-            option_type=6,
-            required=True
-        )],
-        guild_ids=[217111753614426112, 274151655795064832]
-    )
-    async def _birthday(self, ctx: SlashContext, user: discord.Member = None):
+    @commands.command(description='Toggle the birthday role, if available.')
+    async def birthday(self, ctx, user: discord.Member = None):
         """Happy Birthday!"""
         # await ctx.respond(eat=True)
 
         if not is_mod(ctx.channel, ctx.author):
-            await ctx.send('Sorry but you\'re not allowed to do that.', hidden=True)
+            await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
         # Quit if we can't get the user
         if user is None:
-            await ctx.send('I can\'t get the user :(', hidden=True)
+            await reply(ctx, 'I can\'t get the user :(', ephemeral=True)
             return
 
         try:
@@ -52,7 +39,7 @@ class Mod(commands.Cog):
                 if str(r.id) == self.conf.get('birthday', str(ctx.guild.id)):
                     user_roles.remove(r)
                     await user.edit(roles=user_roles)
-                    await ctx.send('Birthday time is over.', hidden=True)
+                    await reply(ctx, 'Birthday time is over.', ephemeral=True)
                     return
 
             # Add role and return
@@ -60,7 +47,7 @@ class Mod(commands.Cog):
                 if str(r.id) == self.conf.get('birthday', str(ctx.guild.id)):
                     user_roles.append(r)
                     await user.edit(roles=user_roles)
-                    await ctx.send('Happy birthday %s!' % user.mention)
+                    await reply(ctx, 'Happy birthday %s!' % user.mention)
                     return
 
         except Exception as e:
@@ -69,42 +56,36 @@ class Mod(commands.Cog):
     @commands.command(description='But I might come back!')
     async def sleep(self, ctx):
         """Stops the bot."""
-        if str(ctx.message.author.id) != self.conf.get('bot', 'owner_id'):
-            await ctx.reply('Sorry but you\'re not allowed to do that.')
+        if str(ctx.author.id) != self.conf.get('bot', 'owner_id'):
+            await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
-        await del_message(self, ctx)
+        await reply(ctx, 'Goodnight.', ephemeral=True)
         exit(0)  # I guess it crashes the app too, but whatever
 
     @commands.command(description='In case I went crazy...')
     async def clean(self, ctx):
         """Delete my own messages."""
-        if not is_mod(ctx.message.channel, ctx.message.author):
-            await ctx.reply('Sorry but you\'re not allowed to do that.')
+        if not is_mod(ctx.channel, ctx.author):
+            await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
         try:
-            await ctx.trigger_typing()
-            deleted = await ctx.message.channel.purge(before=ctx.message, limit=1000, check=self.is_me)
-            if len(deleted) > 2:
-                await ctx.send('Deleted %d of my own messages.' % len(deleted))
-            await del_message(self, ctx)
+            deleted = await ctx.channel.purge(before=ctx.message, limit=1000, check=self.is_me)
+            await reply(ctx, 'Deleted %d of my own messages.' % len(deleted), ephemeral=True)
         except Exception as e:
             print('>>> ERROR clean ', e)
 
     @commands.command(description='Specify a number or I will clean the last 50 messages.')
-    async def nuke(self, ctx, nbr: int = 50):
+    async def nuke(self, ctx, count: int = 50):
         """Delete a number of messages."""
-        if not is_mod(ctx.message.channel, ctx.message.author):
-            await ctx.reply('Sorry but you\'re not allowed to do that.')
+        if not is_mod(ctx.channel, ctx.author):
+            await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
             return
 
         try:
-            await ctx.trigger_typing()
-            deleted = await ctx.message.channel.purge(before=ctx.message, limit=nbr)
-            if len(deleted) > 2:
-                await ctx.send('Deleted %d messages.' % len(deleted))
-            await del_message(self, ctx)
+            deleted = await ctx.channel.purge(before=ctx.message, limit=int(count))
+            await reply(ctx, 'Deleted %d messages.' % len(deleted), ephemeral=True)
         except Exception as e:
             print('>>> ERROR clean ', e)
 

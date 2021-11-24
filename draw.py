@@ -24,11 +24,11 @@ class MyClient(discord.Client):
         for reaction in mess.reactions:
             async for user in reaction.users():
                 member = await chan.guild.fetch_member(user.id)
-                str = member.name + '#' + member.discriminator
+                line = member.name + '#' + member.discriminator
                 if member.nick:
-                    str += ' (' + member.nick + ')'
+                    line += ' (' + member.nick + ')'
 
-                print(str)
+                print(line)
 
         print('Done!')
         exit(0)

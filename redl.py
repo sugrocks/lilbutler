@@ -1,3 +1,4 @@
+import re
 import discord
 import configparser
 import better_exceptions
@@ -40,6 +41,19 @@ class MyClient(discord.Client):
                     except configparser.NoOptionError:
                         print('No save path?')
                         pass
+
+                # To save URLs for third party services where we should archive media
+                social_galleries = ['twitter.com', 'pixiv.net', 'imgur.com', 'reddit.com', 'redgifs.com']
+                if any(thing in message.content for thing in social_galleries):
+                    save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
+                    if save_path:
+                        matches = re.finditer(r"(https?://[^\s]+)", message.content)
+                        for _, match in enumerate(matches):
+                            url = match.group()
+                            # One more time
+                            if any(thing in url for thing in social_galleries):
+                                with open(save_path + 'todl.txt', 'a+') as f:
+                                    f.write(url + '\n')
 
         print('Done!')
         exit(0)
