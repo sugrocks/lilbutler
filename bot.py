@@ -238,8 +238,7 @@ async def on_member_join(member):
                            timestamp=datetime.utcnow())
     else:
         em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
-                           description=member.mention + ' joined.\n' +
-                           'Account was created ' + user_created,
+                           description=member.mention + ' was created ' + user_created,
                            colour=0x23D160,  # color: green
                            timestamp=datetime.utcnow())
     em.set_thumbnail(url=member.display_avatar.url)
@@ -265,7 +264,7 @@ async def on_member_remove(member):
 
     # Count for how long an user has been a member
     diff = relativedelta(datetime.utcnow(), member.joined_at.replace(tzinfo=None))
-    member_since = member.mention + ' was a member for '
+    member_since = 'They were a member for '
     if diff.years > 0:
         member_since += str(diff.years) + ' year' + ('s ' if diff.years != 1 else ' ')
     if diff.months > 0:
