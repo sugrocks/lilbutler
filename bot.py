@@ -380,7 +380,7 @@ async def on_message_edit(old, message):
         if diff_line_count < 3:
             diff_line_count += 1
         else:
-            diff_content += line + '\n'
+            diff_content += line.replace('```', '` ` `') + '\n'
 
     diff_content += '```'
 
