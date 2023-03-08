@@ -4,6 +4,7 @@ import logging
 import asyncio
 import discord
 import sqlite3
+import difflib
 import configparser
 import better_exceptions
 
@@ -368,10 +369,23 @@ async def on_message_edit(old, message):
     for a in message.attachments:
         attch.append(a.url)
 
+    # Make diff
+    diff_content = '```diff\n'
+    diff_line_count = 0
+
+    for line in difflib.unified_diff(old.content.split('\n'), message.content.split('\n'), n=1000):
+        # Skip header
+        if diff_line_count < 3:
+            diff_line_count += 1
+        else:
+            diff_content += line + '\n'
+
+    diff_content += '```'
+
     # Build an embed
-    em = discord.Embed(colour=0x800080, timestamp=message.created_at)  # color: purple
-    em.add_field(name='Before', inline=False, value=old.content + ' ' + ' '.join(attch))
-    em.add_field(name='After', inline=False, value=message.content + ' ' + ' '.join(attch))
+    em = discord.Embed(description=diff_content, colour=0x800080, timestamp=message.created_at)  # color: purple
+    # em.add_field(name='Before', inline=False, value=old.content + ' ' + ' '.join(attch))
+    # em.add_field(name='After', inline=False, value=message.content + ' ' + ' '.join(attch))
     em.set_author(name=author.name, icon_url=author.display_avatar.url)
     em.set_footer(text='#' + str(message.channel.name) + ' - ID: ' + str(message.id))
 
