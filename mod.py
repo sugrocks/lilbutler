@@ -63,6 +63,23 @@ class Mod(commands.Cog):
         await reply(ctx, 'Goodnight.', ephemeral=True)
         exit(0)  # I guess it crashes the app too, but whatever
 
+    @commands.command(description='It\'s just a kick bro.')
+    async def kick(self, ctx, user: discord.Member = None):
+        """Kick some asses"""
+        # await ctx.respond(eat=True)
+
+        if not is_mod(ctx.channel, ctx.author):
+            await reply(ctx, 'Sorry but you\'re not allowed to do that.', ephemeral=True)
+            return
+
+        # Quit if we can't get the user
+        if user is None:
+            await reply(ctx, 'I can\'t get the user :(', ephemeral=True)
+            return
+
+        await user.kick(reason='Kicked by %s' % ctx.author.name)
+        await reply(ctx, 'Kicked %s' % user.mention)
+
     @commands.command(description='In case I went crazy...')
     async def clean(self, ctx):
         """Delete my own messages."""

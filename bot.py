@@ -89,6 +89,16 @@ commands = [
         )]
     ),
     discord.ApplicationCommand(
+        name="kick",
+        description="Kick some asses.",
+        options=[discord.ApplicationCommandOption(
+            name="user",
+            description="The targeted user",
+            type=discord.ApplicationCommandOptionType.user,
+            required=True
+        )]
+    ),
+    discord.ApplicationCommand(
         name="nuke",
         description="Delete a number of messages.",
         options=[discord.ApplicationCommandOption(
