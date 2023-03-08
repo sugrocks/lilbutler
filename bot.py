@@ -186,15 +186,18 @@ async def on_message(message):
 
     # To save URLs for third party services where we should archive media
     if any(thing in message.content for thing in social_galleries):
-        save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
-        if save_path:
-            matches = re.finditer(r"(https?://[^\s]+)", message.content)
-            for _, match in enumerate(matches):
-                url = match.group()
-                # One more time
-                if any(thing in url for thing in social_galleries):
-                    with open(save_path + 'todl.txt', 'a+') as f:
-                        f.write(url + '\n')
+        try:
+            save_path = conf.get('savepics', str(message.channel.id))  # get where we save some pics
+            if save_path:
+                matches = re.finditer(r"(https?://[^\s]+)", message.content)
+                for _, match in enumerate(matches):
+                    url = match.group()
+                    # One more time
+                    if any(thing in url for thing in social_galleries):
+                        with open(save_path + 'todl.txt', 'a+') as f:
+                            f.write(url + '\n')
+        except configparser.NoOptionError:
+            pass
 
 
 # On user join
