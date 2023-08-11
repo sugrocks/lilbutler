@@ -231,16 +231,22 @@ async def on_member_join(member):
     except:
         print('ERROR: Can\'t find the creation date for user join')
 
+    # Adapt to new usernames
+    if member.discriminator != '0':
+        member_name = member.name + '#' + member.discriminator
+    else:
+        member_name = '@' + member.name
+
     # Build an embed
     if autoban:
-        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server [WARNING]',
+        em = discord.Embed(title=member_name + ' joined the server [WARNING]',
                            description='USER WILL BE BANNED AUTOMATICALLY. \n' +
                            member.mention + ' joined.\n' +
                            'Account was created ' + user_created,
                            colour=0x23D160,  # color: green
                            timestamp=datetime.utcnow())
     else:
-        em = discord.Embed(title=member.name + '#' + member.discriminator + ' joined the server',
+        em = discord.Embed(title=member_name + ' joined the server',
                            description=member.mention + ' was created ' + user_created,
                            colour=0x23D160,  # color: green
                            timestamp=datetime.utcnow())
@@ -279,8 +285,14 @@ async def on_member_remove(member):
     member_since += str(diff.minutes) + ' minute' + ('s and ' if diff.minutes != 1 else ' and ')
     member_since += str(diff.seconds) + ' second' + ('s.' if diff.seconds != 1 else '.')
 
+    # Adapt to new usernames
+    if member.discriminator != '0':
+        member_name = member.name + '#' + member.discriminator
+    else:
+        member_name = '@' + member.name
+
     # Build an embed
-    em = discord.Embed(title=member.name + '#' + member.discriminator + ' left the server',
+    em = discord.Embed(title=member_name + ' left the server',
                        description=member_since,
                        colour=0xE81010,  # color: red
                        timestamp=datetime.utcnow())
